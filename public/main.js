@@ -32,7 +32,6 @@ function dice_initialize(container) {
     if (params.chromakey) {
         $t.dice.desk_color = 0x00ff00;
         info_div.style.display = 'none';
-        $t.id('control_panel').style.display = 'none';
     }
     if (params.shadows == 0) {
         $t.dice.use_shadows = false;

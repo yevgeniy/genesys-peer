@@ -142,6 +142,15 @@
     this.standart_d100_dice_face_labels = [' ', '00', '10', '20', '30', '40', '50',
         '60', '70', '80', '90'];
 
+    this.boost_dice_labels = [' ', ' ', 's', 's a', 'a a', 'a']
+    this.ability_dice_labels = [' ', 's', 's', 's s', 'a', 'a', 's a', 'a a'];
+    this.proficiency_dice_labels = [' ', 's', 's', 's s', 's s', 'a', 's a', 's a', 's a', 'a a', 'a a', 't'];
+
+    this.setback_dice_labels = [' ', ' ', 'f', 'f', 'h', 'h'];
+    this.difficulty_dice_labels = [' ', 'f', 'f f', 'h', 'h', 'h', 'h h', 'f h'];
+    this.challenge_dice_labels = [' ', 'f', 'f', 'f f', 'f f', 'h', 'h', 'f h', 'f h', 'h h', 'h h', 'd'];
+
+
     function calc_texture_size(approx) {
         return Math.pow(2, Math.floor(Math.log(approx) / Math.log(2)));
     }
