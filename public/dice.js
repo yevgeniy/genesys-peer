@@ -802,7 +802,9 @@
             this.scene.remove(dice);
             if (dice.body) this.world.remove(dice.body);
         }
-        if (this.pane) this.scene.remove(this.pane);
+
+        //if (this.pane) this.scene.remove(this.pane);
+
         this.renderer.render(this.scene, this.camera);
         var box = this;
         setTimeout(function () { box.renderer.render(box.scene, box.camera); }, 100);
@@ -885,6 +887,8 @@
         if (intersects.length) return intersects[0].object.userData;
     }
 
+
+    /* GENE: start drawing dice */
     this.dice_box.prototype.draw_selector = function () {
         this.clear();
         var step = this.w / 4.5;

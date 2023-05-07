@@ -1,8 +1,6 @@
 "use strict";
 
 function dice_initialize(container) {
-    $t.remove($t.id('loading_text'));
-
     var canvas = $t.id('canvas');
     canvas.style.width = window.innerWidth - 1 + 'px';
     canvas.style.height = window.innerHeight - 1 + 'px';
@@ -42,6 +40,10 @@ function dice_initialize(container) {
     }
 
     var box = new $t.dice.dice_box(canvas, { w: 500, h: 300 });
+
+
+    window.__diceBox = box;
+
     box.animate_selector = false;
 
     $t.bind(window, 'resize', function () {
@@ -51,8 +53,8 @@ function dice_initialize(container) {
     });
 
     function show_selector() {
-        info_div.style.display = 'none';
-        selector_div.style.display = 'inline-block';
+        // info_div.style.display = 'none';
+        // selector_div.style.display = 'inline-block';
         box.draw_selector();
     }
 

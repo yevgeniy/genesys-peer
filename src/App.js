@@ -3,12 +3,13 @@ import { BiCopyAlt, BiPlug, BiCommentError } from 'react-icons/bi'
 
 import "./styles.css";
 import "./genesys.css";
-import { usePeer } from './hooks';
+import { useDice, usePeer } from './hooks';
 import DiceButton from './DiceButton';
 
 export default function App() {
 
   const [{ isConnectedToHost, toHostConnectionUrl, hostPeerId, isError }] = usePeer()
+  const [, { clearDice }] = useDice();
 
   useEffect(() => {
     setTimeout(() => {
@@ -63,7 +64,7 @@ export default function App() {
           </div>
           <div className='dice-button-controls'>
             <button>Roll</button>
-            <button>Clear</button>
+            <button onClick={clearDice}>Clear</button>
           </div>
         </div>
       </div>
