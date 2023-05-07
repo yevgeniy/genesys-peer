@@ -1,18 +1,16 @@
 import React, { useRef, useState, useEffect } from 'react'
-import Peer from 'peerjs';
-import { BiCopyAlt } from 'react-icons/bi'
+import { BiCopyAlt, BiPlug, BiCommentError } from 'react-icons/bi'
 
 import "./styles.css";
 import "./genesys.css";
+import { usePeer } from './hooks';
+import DiceButton from './DiceButton';
 
 export default function App() {
-  console.log('RUNNING')
 
-  const peer = useRef();
-  const [peerId, setPeerId] = useState();
+  const [{ isConnectedToHost, toHostConnectionUrl, hostPeerId, isError }] = usePeer()
 
   useEffect(() => {
-    console.log('init')
     setTimeout(() => {
 
       dice_initialize(document.body)
@@ -20,46 +18,55 @@ export default function App() {
   }, [])
 
 
-  useEffect(() => {
-    peer.current = new Peer();
-    peer.current.on('open', function (id) {
-      setPeerId(id);
-    });
-    peer.current.on('error', (err) => {
-      console.log(err)
-    })
-    peer.current.on('connection', function (connFromClient) {
-      console.log("GOT CONNECTION FROM CLIENT", connFromClient);
-
-      connFromClient.on('data', (data) => {
-        console.log("READING FROM CLIENT", data)
-      })
-    });
-  }, [])
-
-
-  const doConnect = () => {
-    const id = document.querySelector('#peer-id-input').value;
-
-    const connToHost = peer.current.connect(id);
-    connToHost.on('open', function () {
-
-      // Receive messages
-      connToHost.on('data', function (data) {
-        console.log('DATA FROM HOST', data);
-      });
-
-      // Send messages
-      connToHost.send('Hello!');
-    });
-  }
-
   const copyToClipBoard = () => {
-    navigator.clipboard.writeText(peerId);
+    navigator.clipboard.writeText(toHostConnectionUrl);
   }
 
   return (
     <div className="App">
+
+      <div className="connection-rig">
+        {toHostConnectionUrl && <>
+          <h5>Connection url:</h5>
+          <div>{toHostConnectionUrl} <BiCopyAlt className="copy-button" title="copy" onClick={copyToClipBoard} /></div>
+          <sub>Using this url other players can connect to your host.</sub>
+        </>}
+
+        {isConnectedToHost && <>
+
+          <h5>
+            <BiPlug title={`connected`} size={30} color="#416649" />
+            <i>{hostPeerId}</i>
+          </h5>
+        </>}
+
+        {isError && <>
+          <h5>
+            <BiCommentError title={`some error connecting`} size={30} color="#cf364f" />
+            <i>there was some error generating id or connecting.</i>
+          </h5>
+        </>}
+      </div>
+
+      <div className='dice-rig'>
+        <div>
+          <div className="dice-buttons">
+            <DiceButton name='ability' />
+            <DiceButton name='proficiency' />
+            <DiceButton name='boost' />
+            <DiceButton name='difficulty' />
+            <DiceButton name='challenge' />
+            <DiceButton name='setback' />
+            <DiceButton name='force' />
+            <DiceButton name='d100' />
+            <DiceButton name='d10' />
+          </div>
+          <div className='dice-button-controls'>
+            <button>Roll</button>
+            <button>Clear</button>
+          </div>
+        </div>
+      </div>
 
       <div >
         <div id="info_div" style={{ display: 'none' }}>
@@ -87,11 +94,7 @@ export default function App() {
 
 
       <div style={{ position: 'relative', width: '450px' }}>
-        {peerId && <h4>Your peed id: {peerId} <BiCopyAlt className="copy-button" title="copy" onClick={copyToClipBoard} /></h4>}
-        <input type='text' id="peer-id-input" />
-        <button onClick={doConnect}>
-          Connect
-        </button>
+
 
 
 

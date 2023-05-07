@@ -304,7 +304,7 @@
     window.force_dice_labels = this.force_dice_labels = ['-', '-', '●', '●', '●', '●', '●', '●', '●●', '○', '○', '○○', '○○', '○○', '14', '15', '16', '17', '18', '19', '20'];
 
 
-    window.known_types = this.known_types = ['boost', 'ability', 'proficiency', 'setback', 'difficulty', 'challenge', 'force'];
+    window.known_types = this.known_types = ['boost', 'ability', 'proficiency', 'setback', 'difficulty', 'challenge', 'force', 'd10', 'd100'];
     this.dice_face_range = {
         'd4': [1, 4], 'd6': [1, 6], 'd8': [1, 8], 'd10': [0, 9],
         'd12': [1, 12], 'd20': [1, 20], 'd100': [0, 9],
