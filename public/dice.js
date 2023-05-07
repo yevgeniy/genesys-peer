@@ -304,7 +304,7 @@
     window.force_dice_labels = this.force_dice_labels = ['-', '-', '●', '●', '●', '●', '●', '●', '●●', '○', '○', '○○', '○○', '○○', '14', '15', '16', '17', '18', '19', '20'];
 
 
-    window.known_types = this.known_types = ['boost', 'ability', 'proficiency', 'setback', 'difficulty', 'challenge', 'force', 'd10', 'd100'];
+    window.__known_types = this.known_types = [];
     this.dice_face_range = {
         'd4': [1, 4], 'd6': [1, 6], 'd8': [1, 8], 'd10': [0, 9],
         'd12': [1, 12], 'd20': [1, 20], 'd100': [0, 9],
@@ -887,16 +887,24 @@
         if (intersects.length) return intersects[0].object.userData;
     }
 
-
-    /* GENE: start drawing dice */
-    this.dice_box.prototype.draw_selector = function () {
+    this.dice_box.prototype.draw_pane = function () {
         this.clear();
-        var step = this.w / 4.5;
         this.pane = new THREE.Mesh(new THREE.PlaneGeometry(this.w * 6, this.h * 6, 1, 1),
             new THREE.MeshPhongMaterial(that.selector_back_colors));
         this.pane.receiveShadow = true;
         this.pane.position.set(0, 0, 1);
         this.scene.add(this.pane);
+    }
+
+    this.dice_box.prototype.set_dice = function (dice) {
+        that.known_types = dice;
+    }
+
+
+    /* GENE: start drawing dice */
+    this.dice_box.prototype.draw_selector = function () {
+        this.clear();
+        var step = this.w / 4.5;
 
         var mouse_captured = false;
 

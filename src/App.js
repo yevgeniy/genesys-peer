@@ -5,11 +5,12 @@ import "./styles.css";
 import "./genesys.css";
 import { useDice, usePeer } from './hooks';
 import DiceButton from './DiceButton';
+import useCommonHook from 'nimm-commonhook';
 
 export default function App() {
 
   const [{ isConnectedToHost, toHostConnectionUrl, hostPeerId, isError }] = usePeer()
-  const [, { clearDice }] = useDice();
+  const [, { clearDice }] = useCommonHook(useDice) || [, {}]
 
   useEffect(() => {
     setTimeout(() => {
@@ -54,9 +55,9 @@ export default function App() {
           <div className="dice-buttons">
             <DiceButton name='ability' />
             <DiceButton name='proficiency' />
-            <DiceButton name='boost' />
             <DiceButton name='difficulty' />
             <DiceButton name='challenge' />
+            <DiceButton name='boost' />
             <DiceButton name='setback' />
             <DiceButton name='force' />
             <DiceButton name='d100' />

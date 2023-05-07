@@ -1,10 +1,18 @@
+import useCommonHook from 'nimm-commonhook';
 import React from 'react';
 import { useMemo } from 'react';
 import { BiCheckbox } from 'react-icons/bi';
+import { useDice } from './hooks';
 
 
 
 const DiceButton = ({ name }) => {
+
+    const [, { addDie }] = useCommonHook(useDice) || [, {}]
+
+    const doAddDie = () => {
+        addDie(name);
+    }
 
     const char = useMemo(() => {
         switch (name) {
@@ -21,11 +29,11 @@ const DiceButton = ({ name }) => {
     }, [name])
 
     if (name === 'd10' || name === 'd100')
-        return <div className={`dice-button ${name}`} style={{ fontSize: '10px' }} >
+        return <div className={`dice-button ${name}`} style={{ fontSize: '10px' }} onClick={doAddDie}>
             {char}
         </div>
 
-    return <div className={`dice-button genesys ${name}`} >
+    return <div className={`dice-button genesys ${name}`} onClick={doAddDie}>
         {char}
     </div>
 }
