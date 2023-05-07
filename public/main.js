@@ -70,6 +70,11 @@ function dice_initialize(container) {
     }
 
     function after_roll(notation, result) {
+        window.__resultDiceTypes && window.__resultDiceTypes(
+            notation.set,
+            result
+        )
+        /* GENE: reporting on roll */
         if (params.chromakey || params.noresult) return;
         var res = result.join(' ');
         if (notation.constant) {
@@ -93,6 +98,10 @@ function dice_initialize(container) {
             return;
         }
         var name = box.search_dice_by_mouse(ev);
+
+        /* GENE: clicked on a die and got it's name */
+        console.log("CLICKED", name)
+
         if (name != undefined) {
             var notation = $t.dice.parse_notation(set.value);
             notation.set.push(name);

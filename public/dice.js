@@ -289,32 +289,22 @@
     this.desk_color = 0xdfdfdf;
     this.use_shadows = true;
 
-    this.standart_d20_dice_face_labels = [' ', '0', '1', '2', '3', '4', '5', '6', '7', '8',
-        '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'];
-    this.standart_d100_dice_face_labels = [' ', '00', '10', '20', '30', '40', '50',
-        '60', '70', '80', '90'];
+    this.standart_d20_dice_face_labels = [' ', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'];
+    this.standart_d100_dice_face_labels = [' ', '00', '10', '20', '30', '40', '50', '60', '70', '80', '90'];
 
-    //this.boost_dice_labels =         [' ', ' ', 's', 's a', 'a a', 'a'];
-    this.boost_dice_labels = [' ', '0', ' ', ' ', 's', 's a', 'a a', 'a', '7', '8',
-        '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'];
-    //this.setback_dice_labels =         [' ', ' ', 'f', 'f', 'h', 'h'];
-    this.setback_dice_labels = [' ', '0', ' ', ' ', 'f', 'f', 'h', 'h', '7', '8',
-        '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'];
+    window.boost_dice_labels = this.boost_dice_labels = ['-', '-', ' ', ' ', 's', 'sa', 'aa', 'a', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'];
+    window.setback_dice_labels = this.setback_dice_labels = ['-', '-', ' ', ' ', 'f', 'f', 'h', 'h', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'];
 
-    //this.ability_dice_labels =         [' ', 's', 's', 's s', 'a', 'a', 's a', 'a a'];
-    this.ability_dice_labels = [' ', '0', ' ', 's', 's', 's s', 'a', 'a', 's a', 'a a',
-        '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'];
-    //this.difficulty_dice_labels =         [' ', 'f', 'f f', 'h', 'h', 'h', 'h h', 'f h'];
-    this.difficulty_dice_labels = [' ', '0', ' ', 'f', 'f f', 'h', 'h', 'h', 'h h', 'f h',
-        '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'];
+    window.ability_dice_labels = this.ability_dice_labels = ['-', '-', ' ', 's', 's', 'ss', 'a', 'a', 'sa', 'aa', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'];
+    window.difficulty_dice_labels = this.difficulty_dice_labels = ['-', '-', ' ', 'f', 'ff', 'h', 'h', 'h', 'hh', 'fh', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'];
 
-    //this.proficiency_dice_labels =         [' ', 's', 's', 's s', 's s', 'a', 's a', 's a', 's a', 'a a', 'a a', 't'];
-    this.proficiency_dice_labels = [' ', ' ', 's', 's', 'ss', 'ss', 'a', 'sa', 'sa', 'sa', 'aa', 'aa', 't', '13', '14', '15', '16', '17', '18', '19', '20'];
-    //this.challenge_dice_labels =         [' ', 'f', 'f', 'f f', 'f f', 'h', 'h', 'f h', 'f h', 'h h', 'h h', 'd'];
-    this.challenge_dice_labels = [' ', ' ', 'f', 'f', 'ff', 'ff', 'h', 'h', 'fh', 'fh', 'hh', 'hh', 'd', '13', '14', '15', '16', '17', '18', '19', '20'];
+    window.proficiency_dice_labels = this.proficiency_dice_labels = ['-', '-', ' ', 's', 's', 'ss', 'ss', 'a', 'sa', 'sa', 'sa', 'aa', 'aa', 't', '14', '15', '16', '17', '18', '19', '20'];
+    window.challenge_dice_labels = this.challenge_dice_labels = ['-', '-', ' ', 'f', 'f', 'ff', 'ff', 'h', 'h', 'fh', 'fh', 'hh', 'hh', 'd', '14', '15', '16', '17', '18', '19', '20'];
+
+    window.force_dice_labels = this.force_dice_labels = ['-', '-', '●', '●', '●', '●', '●', '●', '●●', '○', '○', '○○', '○○', '○○', '14', '15', '16', '17', '18', '19', '20'];
 
 
-    this.known_types = ['d12', 'boost', 'ability', 'proficiency', 'setback', 'difficulty', 'challenge'];
+    window.known_types = this.known_types = ['boost', 'ability', 'proficiency', 'setback', 'difficulty', 'challenge', 'force'];
     this.dice_face_range = {
         'd4': [1, 4], 'd6': [1, 6], 'd8': [1, 8], 'd10': [0, 9],
         'd12': [1, 12], 'd20': [1, 20], 'd100': [0, 9],
@@ -322,8 +312,9 @@
         'setback': [1, 6],
         'ability': [1, 8],
         'difficulty': [1, 8],
-        'proficiency': [0, 9],
-        'challenge': [0, 9]
+        'proficiency': [1, 12],
+        'challenge': [1, 12],
+        'force': [1, 12]
     };
     this.dice_mass = {
         'd4': 300, 'd6': 300, 'd8': 340, 'd10': 350, 'd12': 350, 'd20': 400, 'd100': 350,
@@ -332,7 +323,8 @@
         'ability': 340,
         'difficulty': 340,
         'proficiency': 350,
-        'challenge': 350
+        'challenge': 350,
+        'force': 350
     };
     this.dice_inertia = {
         'd4': 5, 'd6': 13, 'd8': 10, 'd10': 9, 'd12': 8, 'd20': 6, 'd100': 9,
@@ -340,8 +332,9 @@
         'setback': 13,
         'ability': 10,
         'difficulty': 10,
-        'proficiency': 9,
-        'challenge': 9
+        'proficiency': 8,
+        'challenge': 8,
+        'force': 8
     };
     this.dice_colors = {
         'boost': '#78dcf0',
@@ -349,7 +342,8 @@
         'ability': '#10e8a0',
         'difficulty': '#552e87',
         'proficiency': '#eff547',
-        'challenge': '#8a2922'
+        'challenge': '#8a2922',
+        'force': '#e0e0e0'
     }
     this.text_colors = {
         'boost': 'black',
@@ -358,6 +352,7 @@
         'difficulty': 'white',
         'proficiency': 'black',
         'challenge': 'white',
+        'force': 'black'
     }
 
     this.scale = 50;
@@ -427,7 +422,7 @@
     }
 
     this.create_proficiency = function () {
-        if (!this.proficiency_geometry) this.proficiency_geometry = this.create_d10_geometry(this.scale * 1.1);
+        if (!this.proficiency_geometry) this.proficiency_geometry = this.create_d12_geometry(this.scale * 1.1);
         if (!this.proficiency_dice_material) this.proficiency_dice_material = new THREE.MeshFaceMaterial(
             this.create_dice_materials(
                 this.proficiency_dice_labels,
@@ -440,7 +435,7 @@
         return new THREE.Mesh(this.proficiency_geometry, this.proficiency_dice_material);
     }
     this.create_challenge = function () {
-        if (!this.challenge_geometry) this.challenge_geometry = this.create_d10_geometry(this.scale * 1.1);
+        if (!this.challenge_geometry) this.challenge_geometry = this.create_d12_geometry(this.scale * 1.1);
         if (!this.challenge_dice_material) this.challenge_dice_material = new THREE.MeshFaceMaterial(
             this.create_dice_materials(
                 this.challenge_dice_labels,
@@ -451,6 +446,18 @@
                 'Genesys'
             ));
         return new THREE.Mesh(this.challenge_geometry, this.challenge_dice_material);
+    }
+    this.create_force = function () {
+        if (!this.force_geometry) this.force_geometry = this.create_d12_geometry(this.scale * 1.1);
+        if (!this.force_dice_material) this.force_dice_material = new THREE.MeshFaceMaterial(
+            this.create_dice_materials(
+                this.force_dice_labels,
+                this.scale,
+                1.0,
+                this.dice_colors['force'],
+                this.text_colors['force']
+            ));
+        return new THREE.Mesh(this.force_geometry, this.force_dice_material);
     }
 
     this.create_d10 = function () {
@@ -713,6 +720,7 @@
     }
 
     function get_dice_value(dice) {
+        console.log(dice)
         var vector = new THREE.Vector3(0, 0, dice.dice_type == 'd4' ? -1 : 1);
         var closest_face, closest_angle = Math.PI * 2;
         for (var i = 0, l = dice.geometry.faces.length; i < l; ++i) {
@@ -727,6 +735,7 @@
         var matindex = closest_face.materialIndex - 1;
         if (dice.dice_type == 'd100') matindex *= 10;
         if (dice.dice_type == 'd10' && matindex == 0) matindex = 10;
+
         return matindex;
     }
 
@@ -772,6 +781,7 @@
         this.last_time = this.last_time ? time : (new Date()).getTime();
         if (this.running == threadid && this.check_if_throw_finished()) {
             this.running = false;
+            /* GENE: roll evaluated */
             if (this.callback) this.callback.call(this, get_dice_values(this.dices));
         }
         if (this.running == threadid) {
@@ -891,6 +901,7 @@
             dice.position.set(pos * step, 0, step * 0.5);
             dice.castShadow = true;
             dice.userData = that.known_types[i];
+            /* GENE: simply add die to scene */
             this.dices.push(dice); this.scene.add(dice);
         }
 
@@ -913,10 +924,17 @@
             }
         }
         vector.x /= dist; vector.y /= dist;
+        /* GENE: get selected dice */
         var notation = notation_getter.call(box);
         if (notation.set.length == 0) return;
+
+        notation.set = ['boost', 'boost', 'boost']
+        console.log(notation)
+        /* GENE: generate vector array for a list of die names notation={set:['d12', 'd12']} */
         var vectors = box.generate_vectors(notation, vector, boost);
+
         box.rolling = true;
+
         if (before_roll) before_roll.call(box, vectors, notation, roll);
         else roll();
     }
@@ -955,6 +973,7 @@
     }
 
     this.dice_box.prototype.start_throw = function (notation_getter, before_roll, after_roll) {
+        /* GENE: throw starts */
         var box = this;
         if (box.rolling) return;
         prepare_rnd(function () {
