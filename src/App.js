@@ -13,7 +13,10 @@ export default function App() {
 
   useEffect(() => {
     console.log('init')
-    console.log(dice_initialize(document.body))
+    setTimeout(() => {
+
+      dice_initialize(document.body)
+    }, 1000)
   }, [])
 
 
