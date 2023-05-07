@@ -150,11 +150,14 @@
             if (text == undefined) return null;
             var canvas = document.createElement("canvas");
             var context = canvas.getContext("2d");
-            var ts = calc_texture_size(size + size * 2 * margin) * 2;
 
+            let marg = margin;
+            text.length === 2 && (marg = marg * 1.5)
+
+            const ts = calc_texture_size(size + size * 2 * marg) * 2;
 
             canvas.width = canvas.height = ts;
-            context.font = ts / (1 + 2 * margin) + 'pt ' + fontFamily;
+            context.font = ts / (1 + 2 * marg) + 'pt ' + fontFamily;
             context.fillStyle = back_color;
             context.fillRect(0, 0, canvas.width, canvas.height);
             context.textAlign = "center";
@@ -170,7 +173,6 @@
         }
         var materials = [];
         for (var i = 0; i < face_labels.length; ++i) {
-            //console.log(face_labels[i], textColor, diceColor)
             materials.push(new THREE.MeshPhongMaterial($t.copyto(this.material_options,
                 { map: create_text_texture(face_labels[i], textColor, diceColor) }
             )));
@@ -360,12 +362,7 @@
 
     this.scale = 50;
 
-    this.create_d6 = function () {
-        if (!this.d6_geometry) this.d6_geometry = this.create_d6_geometry(this.scale * 0.9);
-        if (!this.dice_material) this.dice_material = new THREE.MeshFaceMaterial(
-            this.create_dice_materials(this.standart_d20_dice_face_labels, this.scale / 2, 1.0));
-        return new THREE.Mesh(this.d6_geometry, this.dice_material);
-    }
+
     this.create_boost = function () {
         if (!this.boost_geometry) this.boost_geometry = this.create_d6_geometry(this.scale * 0.9);
         if (!this.boost_dice_material)
@@ -434,7 +431,7 @@
         if (!this.proficiency_dice_material) this.proficiency_dice_material = new THREE.MeshFaceMaterial(
             this.create_dice_materials(
                 this.proficiency_dice_labels,
-                this.scale / 2,
+                this.scale,
                 1.0,
                 this.dice_colors['proficiency'],
                 this.text_colors['proficiency'],
@@ -447,7 +444,7 @@
         if (!this.challenge_dice_material) this.challenge_dice_material = new THREE.MeshFaceMaterial(
             this.create_dice_materials(
                 this.challenge_dice_labels,
-                this.scale / 2,
+                this.scale,
                 1.0,
                 this.dice_colors['challenge'],
                 this.text_colors['challenge'],
