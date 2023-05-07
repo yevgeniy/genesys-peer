@@ -96,22 +96,22 @@ function dice_initialize(container) {
 
     $t.bind(container, ['mouseup', 'touchend'], function (ev) {
         ev.stopPropagation();
-        if (selector_div.style.display == 'none') {
-            if (!box.rolling) show_selector();
-            box.rolling = false;
-            return;
-        }
+
         var name = box.search_dice_by_mouse(ev);
+        const dieIndex = box.search_index_by_mouse(ev);
 
         /* GENE: clicked on a die and got it's name */
-        console.log("CLICKED", name)
+        console.log("CLICKED", name, dieIndex)
+        if (dieIndex > -1)
+            window.__diceIndexClicked(dieIndex);
 
-        if (name != undefined) {
-            var notation = $t.dice.parse_notation(set.value);
-            notation.set.push(name);
-            set.value = $t.dice.stringify_notation(notation);
-            on_set_change();
-        }
+
+        // if (name != undefined) {
+        //     var notation = $t.dice.parse_notation(set.value);
+        //     notation.set.push(name);
+        //     set.value = $t.dice.stringify_notation(notation);
+        //     on_set_change();
+        // }
     });
 
     if (params.notation) {

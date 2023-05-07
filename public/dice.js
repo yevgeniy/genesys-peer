@@ -884,11 +884,26 @@
             (new THREE.Vector3((m.x - this.cw) / this.aspect,
                 1 - (m.y - this.ch) / this.aspect, this.w / 9))
                 .sub(this.camera.position).normalize())).intersectObjects(this.dices);
+
+
+
         if (intersects.length) return intersects[0].object.userData;
+    }
+    this.dice_box.prototype.search_index_by_mouse = function (ev) {
+        const m = $t.get_mouse_coords(ev);
+        const intersects = (new THREE.Raycaster(this.camera.position,
+            (new THREE.Vector3((m.x - this.cw) / this.aspect,
+                1 - (m.y - this.ch) / this.aspect, this.w / 9))
+                .sub(this.camera.position).normalize())).intersectObjects(this.dices);
+
+        if (!intersects.length)
+            return -1;
+        return this.dices.findIndex(v => v === intersects[0].object)
     }
 
     this.dice_box.prototype.draw_pane = function () {
         this.clear();
+        that.known_types = [];
         this.pane = new THREE.Mesh(new THREE.PlaneGeometry(this.w * 6, this.h * 6, 1, 1),
             new THREE.MeshPhongMaterial(that.selector_back_colors));
         this.pane.receiveShadow = true;
@@ -915,7 +930,6 @@
             dice.position.set(pos * step, 0, step * 0.5);
             dice.castShadow = true;
             dice.userData = that.known_types[i];
-            /* GENE: simply add die to scene */
             this.dices.push(dice); this.scene.add(dice);
         }
 
@@ -942,7 +956,7 @@
         var notation = notation_getter.call(box);
         if (notation.set.length == 0) return;
 
-        notation.set = ['boost', 'boost', 'boost']
+        //notation.set = ['boost', 'boost', 'boost']
         console.log(notation)
         /* GENE: generate vector array for a list of die names notation={set:['d12', 'd12']} */
         var vectors = box.generate_vectors(notation, vector, boost);

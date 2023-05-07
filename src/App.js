@@ -10,7 +10,7 @@ import useCommonHook from 'nimm-commonhook';
 export default function App() {
 
   const [{ isConnectedToHost, toHostConnectionUrl, hostPeerId, isError }] = usePeer()
-  const [, { clearDice }] = useCommonHook(useDice) || [, {}]
+  const [, { clearDice, roll }] = useCommonHook(useDice) || [, {}]
 
   useEffect(() => {
     setTimeout(() => {
@@ -64,7 +64,7 @@ export default function App() {
             <DiceButton name='d10' />
           </div>
           <div className='dice-button-controls'>
-            <button>Roll</button>
+            <button onClick={roll} >Roll</button>
             <button onClick={clearDice}>Clear</button>
           </div>
         </div>
