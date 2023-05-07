@@ -908,7 +908,9 @@
 
         var mouse_captured = false;
 
-        for (var i = 0, pos = -3; i < that.known_types.length; ++i, ++pos) {
+        let startingPos = that.known_types.length / 2
+
+        for (var i = 0, pos = -startingPos; i < that.known_types.length; ++i, ++pos) {
             var dice = $t.dice['create_' + that.known_types[i]]();
             dice.position.set(pos * step, 0, step * 0.5);
             dice.castShadow = true;
