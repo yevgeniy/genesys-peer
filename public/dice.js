@@ -359,7 +359,7 @@
 
 
     this.create_boost = function () {
-        if (!this.boost_geometry) this.boost_geometry = this.create_d6_geometry(this.scale * 0.9);
+        if (!this.boost_geometry) this.boost_geometry = this.create_d6_geometry(this.scale * 0.8);
         if (!this.boost_dice_material)
             this.boost_dice_material = new THREE.MeshFaceMaterial(
                 this.create_dice_materials(
@@ -375,7 +375,7 @@
     }
 
     this.create_setback = function () {
-        if (!this.setback_geometry) this.setback_geometry = this.create_d6_geometry(this.scale * 0.9);
+        if (!this.setback_geometry) this.setback_geometry = this.create_d6_geometry(this.scale * .8);
         if (!this.setback_dice_material)
             this.setback_dice_material = new THREE.MeshFaceMaterial(
                 this.create_dice_materials(
@@ -391,7 +391,7 @@
     }
 
     this.create_ability = function () {
-        if (!this.ability_geometry) this.ability_geometry = this.create_d8_geometry(this.scale);
+        if (!this.ability_geometry) this.ability_geometry = this.create_d8_geometry(this.scale * .9);
         if (!this.ability_dice_material)
             this.ability_dice_material = new THREE.MeshFaceMaterial(
                 this.create_dice_materials(
@@ -406,7 +406,7 @@
         return new THREE.Mesh(this.ability_geometry, this.ability_dice_material);
     }
     this.create_difficulty = function () {
-        if (!this.difficulty_geometry) this.difficulty_geometry = this.create_d8_geometry(this.scale);
+        if (!this.difficulty_geometry) this.difficulty_geometry = this.create_d8_geometry(this.scale * .9);
         if (!this.difficulty_dice_material)
             this.difficulty_dice_material = new THREE.MeshFaceMaterial(
                 this.create_dice_materials(
@@ -422,7 +422,7 @@
     }
 
     this.create_proficiency = function () {
-        if (!this.proficiency_geometry) this.proficiency_geometry = this.create_d12_geometry(this.scale * 1.1);
+        if (!this.proficiency_geometry) this.proficiency_geometry = this.create_d12_geometry(this.scale * .9);
         if (!this.proficiency_dice_material) this.proficiency_dice_material = new THREE.MeshFaceMaterial(
             this.create_dice_materials(
                 this.proficiency_dice_labels,
@@ -435,7 +435,7 @@
         return new THREE.Mesh(this.proficiency_geometry, this.proficiency_dice_material);
     }
     this.create_challenge = function () {
-        if (!this.challenge_geometry) this.challenge_geometry = this.create_d12_geometry(this.scale * 1.1);
+        if (!this.challenge_geometry) this.challenge_geometry = this.create_d12_geometry(this.scale * .9);
         if (!this.challenge_dice_material) this.challenge_dice_material = new THREE.MeshFaceMaterial(
             this.create_dice_materials(
                 this.challenge_dice_labels,
@@ -448,7 +448,7 @@
         return new THREE.Mesh(this.challenge_geometry, this.challenge_dice_material);
     }
     this.create_force = function () {
-        if (!this.force_geometry) this.force_geometry = this.create_d12_geometry(this.scale * 1.1);
+        if (!this.force_geometry) this.force_geometry = this.create_d12_geometry(this.scale * .9);
         if (!this.force_dice_material) this.force_dice_material = new THREE.MeshFaceMaterial(
             this.create_dice_materials(
                 this.force_dice_labels,
