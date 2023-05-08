@@ -14,6 +14,7 @@ const usePeer = () => {
 
     const peer = useRef();
     const toHostConnection = useRef();
+    const [lastMessage, setLastMessage] = useState()
 
     const [isConnectedToHost, setIsConnectedToHost] = useState();
     const [toHostConnectionUrl, setToHostConnectionUrl] = useState();
@@ -21,7 +22,11 @@ const usePeer = () => {
     const [isError, setIsError] = useState();
 
     const parseMessage = (data) => {
-        console.log('MESSAGE RECIEVED', data);
+        setLastMessage(JSON.parse(data))
+    }
+    const sendMessage = (data) => {
+
+        toHostConnection.current && toHostConnection.current.send(JSON.stringify(data));
     }
 
 
@@ -56,10 +61,17 @@ const usePeer = () => {
                 console.log(err)
                 setIsError(true)
             })
+            peer.current.on('connection', function (fromClientConnection) {
+                fromClientConnection.on('data', (data) => {
+                    parseMessage(data);
+                })
+
+            });
+
         }
     }, [])
 
-    return [{ isConnectedToHost, toHostConnectionUrl, hostPeerId }]
+    return [lastMessage, { isConnectedToHost, toHostConnectionUrl, hostPeerId, sendMessage }]
 }
 
 export default usePeer;

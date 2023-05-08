@@ -68,3 +68,24 @@
   border:solid 1px #232323;
   background-color:#efefef;
 }
+
+.results-rig {
+  position: fixed;
+  z-index: 1;
+  right:0;
+  top:0;
+  width:350px;
+  font-size: 12px;
+}
+.results-rig .result-entry {
+  display: flex;
+  padding:3px;
+  border-bottom: dotted 1px #686868;
+}
+.results-rig .result-entry:last-child {
+  border-bottom:none;
+}
+.results-rig .result-entry > div {
+  flex:1;
+  color:'#363636';
+}

@@ -1,4 +1,6 @@
-import { useState } from "react";
+import useCommonHook from "nimm-commonhook";
+import { useEffect, useState } from "react";
+import usePeer from "./usePeer";
 
 const addSuccess = (succ, adv, tri, disp, dark, light) => [++succ, adv, tri, disp, dark, light]
 const addAdv = (succ, adv, tri, disp, dark, light) => [succ, ++adv, tri, disp, dark, light]
@@ -69,20 +71,23 @@ const parseResults = (set, result) => {
         [succ, adv, tri, disp, dark, light] = fn(succ, adv, tri, disp, dark, light)
     })
 
-    console.log({
+
+    return {
         succ,
         adv,
         tri,
         disp,
         dark,
         light
-    })
+    }
 
 }
 
 const useDice = () => {
 
     const [set, setSet] = useState([])
+    const [results, setResults] = useState([])
+    const [peerMessage, { sendMessage }] = useCommonHook(usePeer) || [, {}]
 
 
 
@@ -94,6 +99,8 @@ const useDice = () => {
             window.__diceBox.set_dice(newset);
             window.__diceBox.draw_selector();
 
+            sendMessage({ type: 'set-dice', newset })
+
             return newset;
         })
     }
@@ -103,36 +110,81 @@ const useDice = () => {
         window.__diceBox.set_dice([]);
         window.__diceBox.clear();
         setSet([])
+        sendMessage({ type: 'clear-dice' })
+
     }
     const addDie = name => {
 
         setSet(v => {
             const newset = [...v, name];
-            console.log('a', newset)
             window.__diceBox.set_dice(newset);
             window.__diceBox.draw_selector();
+            sendMessage({ type: 'set-dice', newset })
 
             return newset;
         })
     }
     const roll = () => {
+        let vectors;
+        let notation;
+
         window.__diceBox.start_throw(
             () => { /* notation getter */
                 var ret = { set, constant: 0, result: [], error: false }
                 return ret
             },
-            (vectors, notation, callback) => { /* before roll */
+            (v, n, callback) => { /* before roll */
+                vectors = v;
+                notation = n
                 callback()
             },
             (notation, result) => { /* after roll */
                 console.log('RESULT:', notation, result)
-                parseResults(notation.set, result)
+                sendMessage({ type: 'roll', vectors, notation, result })
+                const res = parseResults(notation.set, result)
+                setResults(r => [res, ...r])
             }
 
         )
     }
 
-    return [, { clearDice, addDie, roll }]
+    useEffect(() => {
+        if (!peerMessage)
+            return;
+
+        switch (peerMessage.type) {
+            case 'set-dice':
+                window.__diceBox.set_dice(peerMessage.newset);
+                window.__diceBox.draw_selector();
+                setSet(peerMessage.newset)
+                break;
+            case 'clear-dice':
+                window.__diceBox.set_dice([]);
+                window.__diceBox.clear();
+                setSet([])
+                break;
+            case 'roll':
+                window.__diceBox.start_throw(
+                    () => { /* notation getter */
+                        return peerMessage.notation;
+                    },
+                    (vectors, notation, callback) => { /* before roll */
+                        callback(peerMessage.result)
+                    },
+                    (notation, result) => { /* after roll */
+                        console.log('RESULT:', notation, result)
+                        const res = parseResults(notation.set, result)
+                        setResults(r => [res, ...r])
+                    },
+                    peerMessage.vectors
+                )
+                break;
+        }
+
+
+    }, [peerMessage])
+
+    return [results, { clearDice, addDie, roll }]
 }
 
 export default useDice;

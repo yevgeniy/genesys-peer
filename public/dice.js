@@ -939,7 +939,7 @@
         else this.renderer.render(this.scene, this.camera);
     }
 
-    function throw_dices(box, vector, boost, dist, notation_getter, before_roll, after_roll) {
+    function throw_dices(box, vector, boost, dist, notation_getter, before_roll, after_roll, vectors) {
         var uat = $t.dice.use_adapvite_timestep;
         function roll(request_results) {
             if (after_roll) {
@@ -959,7 +959,7 @@
         //notation.set = ['boost', 'boost', 'boost']
         console.log(notation)
         /* GENE: generate vector array for a list of die names notation={set:['d12', 'd12']} */
-        var vectors = box.generate_vectors(notation, vector, boost);
+        vectors = vectors || box.generate_vectors(notation, vector, boost);
 
         box.rolling = true;
 
@@ -1000,7 +1000,7 @@
         });
     }
 
-    this.dice_box.prototype.start_throw = function (notation_getter, before_roll, after_roll) {
+    this.dice_box.prototype.start_throw = function (notation_getter, before_roll, after_roll, vectors) {
         /* GENE: throw starts */
         var box = this;
         if (box.rolling) return;
@@ -1008,7 +1008,7 @@
             var vector = { x: (rnd() * 2 - 1) * box.w, y: -(rnd() * 2 - 1) * box.h };
             var dist = Math.sqrt(vector.x * vector.x + vector.y * vector.y);
             var boost = (rnd() + 3) * dist;
-            throw_dices(box, vector, boost, dist, notation_getter, before_roll, after_roll);
+            throw_dices(box, vector, boost, dist, notation_getter, before_roll, after_roll, vectors);
         });
     }
 

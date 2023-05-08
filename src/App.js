@@ -6,11 +6,12 @@ import "./genesys.css";
 import { useDice, usePeer } from './hooks';
 import DiceButton from './DiceButton';
 import useCommonHook from 'nimm-commonhook';
+import RollResult from './RollResult';
 
 export default function App() {
 
-  const [{ isConnectedToHost, toHostConnectionUrl, hostPeerId, isError }] = usePeer()
-  const [, { clearDice, roll }] = useCommonHook(useDice) || [, {}]
+  const [, { isConnectedToHost, toHostConnectionUrl, hostPeerId, isError }] = useCommonHook(usePeer) || [, {}]
+  const [results, { clearDice, roll }] = useCommonHook(useDice) || [[], {}]
 
   useEffect(() => {
     setTimeout(() => {
@@ -70,6 +71,10 @@ export default function App() {
         </div>
       </div>
 
+      <div className='results-rig'>
+        {results.slice(0, 30).map(result => <RollResult {...result} />)}
+      </div>
+
       <div >
         <div id="info_div" style={{ display: 'none' }}>
           <div className="center_field" >
@@ -93,7 +98,7 @@ export default function App() {
 
       </div>
 
-
+      {/* 
 
       <div style={{ position: 'relative', width: '450px' }}>
 
@@ -140,7 +145,7 @@ export default function App() {
         </div>
 
 
-      </div>
+      </div> */}
 
     </div >
   );
