@@ -339,7 +339,7 @@
     this.dice_colors = {
         'boost': '#78dcf0',
         'setback': '#1e2729',
-        'ability': '#10e8a0',
+        'ability': '#4dff70',
         'difficulty': '#552e87',
         'proficiency': '#eff547',
         'challenge': '#8a2922',
@@ -903,6 +903,7 @@
 
     this.dice_box.prototype.draw_pane = function () {
         this.clear();
+        this.rolling = false;
         that.known_types = [];
         this.pane = new THREE.Mesh(new THREE.PlaneGeometry(this.w * 6, this.h * 6, 1, 1),
             new THREE.MeshPhongMaterial(that.selector_back_colors));
@@ -913,6 +914,7 @@
 
     this.dice_box.prototype.set_dice = function (dice) {
         that.known_types = dice;
+        this.rolling = false;
     }
 
 

@@ -25,6 +25,13 @@
   bottom:0;
   left:50%;
   z-index: 1;
+  transition: all 300ms ease;
+}
+.dice-rig.has-rolled {
+  opacity: .3;
+}
+.dice-rig.has-rolled:hover {
+  opacity: 1;
 }
 .dice-rig > div {
   transform: translate(-50%,0);
@@ -68,6 +75,7 @@
   border:solid 1px #232323;
   background-color:#efefef;
 }
+
 
 .results-rig {
   position: fixed;

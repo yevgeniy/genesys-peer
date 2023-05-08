@@ -11,7 +11,7 @@ import RollResult from './RollResult';
 export default function App() {
 
   const [, { isConnectedToHost, toHostConnectionUrl, hostPeerId, isError }] = useCommonHook(usePeer) || [, {}]
-  const [results, { clearDice, roll }] = useCommonHook(useDice) || [[], {}]
+  const [results, { clearDice, roll, hasRolled }] = useCommonHook(useDice) || [[], {}]
 
   useEffect(() => {
     setTimeout(() => {
@@ -51,7 +51,7 @@ export default function App() {
         </>}
       </div>
 
-      <div className='dice-rig'>
+      <div className={`dice-rig ${hasRolled ? 'has-rolled' : ''}`}>
         <div>
           <div className="dice-buttons">
             <DiceButton name='ability' />

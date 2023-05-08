@@ -88,6 +88,7 @@ const useDice = () => {
     const [set, setSet] = useState([])
     const [results, setResults] = useState([])
     const [peerMessage, { sendMessage }] = useCommonHook(usePeer) || [, {}]
+    const [hasRolled, setHasRolled] = useState(false)
 
 
 
@@ -106,6 +107,7 @@ const useDice = () => {
     }
 
     const clearDice = () => {
+        setHasRolled(false);
         console.log('clear')
         window.__diceBox.set_dice([]);
         window.__diceBox.clear();
@@ -114,6 +116,7 @@ const useDice = () => {
 
     }
     const addDie = name => {
+        setHasRolled(false);
 
         setSet(v => {
             const newset = [...v, name];
@@ -127,6 +130,9 @@ const useDice = () => {
     const roll = () => {
         let vectors;
         let notation;
+        setHasRolled(true);
+
+        console.log('ROLL')
 
         window.__diceBox.start_throw(
             () => { /* notation getter */
@@ -154,16 +160,19 @@ const useDice = () => {
 
         switch (peerMessage.type) {
             case 'set-dice':
+                setHasRolled(false);
                 window.__diceBox.set_dice(peerMessage.newset);
                 window.__diceBox.draw_selector();
                 setSet(peerMessage.newset)
                 break;
             case 'clear-dice':
+                setHasRolled(false);
                 window.__diceBox.set_dice([]);
                 window.__diceBox.clear();
                 setSet([])
                 break;
             case 'roll':
+                setHasRolled(true);
                 window.__diceBox.start_throw(
                     () => { /* notation getter */
                         return peerMessage.notation;
@@ -184,7 +193,7 @@ const useDice = () => {
 
     }, [peerMessage])
 
-    return [results, { clearDice, addDie, roll }]
+    return [results, { clearDice, addDie, roll, hasRolled }]
 }
 
 export default useDice;
