@@ -94,7 +94,13 @@ export default function App() {
           </div>
         </div>
 
+
+
         <div id="canvas" ></div>
+
+        <div style={{ position: 'fixed', right: 0, bottom: 0, zIndex: 2 }}>
+          <canvas id='out' width={200} height={200} />
+        </div>
 
       </div>
 

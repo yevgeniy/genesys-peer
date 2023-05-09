@@ -360,70 +360,67 @@
 
     this.create_boost = function () {
         if (!this.boost_geometry) this.boost_geometry = this.create_d6_geometry(this.scale * 0.8);
-        if (!this.boost_dice_material)
-            this.boost_dice_material = new THREE.MeshFaceMaterial(
-                this.create_dice_materials(
-                    this.boost_dice_labels,
-                    this.scale / 2,
-                    1.0,
-                    this.dice_colors['boost'],
-                    this.text_colors['boost'],
-                    'Genesys'
-                )
-            );
+
+        this.boost_dice_material = new THREE.MeshFaceMaterial(
+            this.create_dice_materials(
+                this.boost_dice_labels,
+                this.scale / 2,
+                1.0,
+                this.dice_colors['boost'],
+                this.text_colors['boost'],
+                'Genesys'
+            )
+        );
         return new THREE.Mesh(this.boost_geometry, this.boost_dice_material);
     }
 
     this.create_setback = function () {
         if (!this.setback_geometry) this.setback_geometry = this.create_d6_geometry(this.scale * .8);
-        if (!this.setback_dice_material)
-            this.setback_dice_material = new THREE.MeshFaceMaterial(
-                this.create_dice_materials(
-                    this.setback_dice_labels,
-                    this.scale / 2,
-                    1.0,
-                    this.dice_colors['setback'],
-                    this.text_colors['setback'],
-                    'Genesys'
-                )
-            );
+        this.setback_dice_material = new THREE.MeshFaceMaterial(
+            this.create_dice_materials(
+                this.setback_dice_labels,
+                this.scale / 2,
+                1.0,
+                this.dice_colors['setback'],
+                this.text_colors['setback'],
+                'Genesys'
+            )
+        );
         return new THREE.Mesh(this.setback_geometry, this.setback_dice_material);
     }
 
     this.create_ability = function () {
         if (!this.ability_geometry) this.ability_geometry = this.create_d8_geometry(this.scale * .9);
-        if (!this.ability_dice_material)
-            this.ability_dice_material = new THREE.MeshFaceMaterial(
-                this.create_dice_materials(
-                    this.ability_dice_labels,
-                    this.scale / 2,
-                    1.2,
-                    this.dice_colors['ability'],
-                    this.text_colors['ability'],
-                    'Genesys'
-                )
-            );
+        this.ability_dice_material = new THREE.MeshFaceMaterial(
+            this.create_dice_materials(
+                this.ability_dice_labels,
+                this.scale / 2,
+                1.2,
+                this.dice_colors['ability'],
+                this.text_colors['ability'],
+                'Genesys'
+            )
+        );
         return new THREE.Mesh(this.ability_geometry, this.ability_dice_material);
     }
     this.create_difficulty = function () {
         if (!this.difficulty_geometry) this.difficulty_geometry = this.create_d8_geometry(this.scale * .9);
-        if (!this.difficulty_dice_material)
-            this.difficulty_dice_material = new THREE.MeshFaceMaterial(
-                this.create_dice_materials(
-                    this.difficulty_dice_labels,
-                    this.scale / 2,
-                    1.2,
-                    this.dice_colors['difficulty'],
-                    this.text_colors['difficulty'],
-                    'Genesys'
-                )
-            );
+        this.difficulty_dice_material = new THREE.MeshFaceMaterial(
+            this.create_dice_materials(
+                this.difficulty_dice_labels,
+                this.scale / 2,
+                1.2,
+                this.dice_colors['difficulty'],
+                this.text_colors['difficulty'],
+                'Genesys'
+            )
+        );
         return new THREE.Mesh(this.difficulty_geometry, this.difficulty_dice_material);
     }
 
     this.create_proficiency = function () {
         if (!this.proficiency_geometry) this.proficiency_geometry = this.create_d12_geometry(this.scale * .9);
-        if (!this.proficiency_dice_material) this.proficiency_dice_material = new THREE.MeshFaceMaterial(
+        this.proficiency_dice_material = new THREE.MeshFaceMaterial(
             this.create_dice_materials(
                 this.proficiency_dice_labels,
                 this.scale,
@@ -436,7 +433,7 @@
     }
     this.create_challenge = function () {
         if (!this.challenge_geometry) this.challenge_geometry = this.create_d12_geometry(this.scale * .9);
-        if (!this.challenge_dice_material) this.challenge_dice_material = new THREE.MeshFaceMaterial(
+        this.challenge_dice_material = new THREE.MeshFaceMaterial(
             this.create_dice_materials(
                 this.challenge_dice_labels,
                 this.scale,
@@ -449,7 +446,7 @@
     }
     this.create_force = function () {
         if (!this.force_geometry) this.force_geometry = this.create_d12_geometry(this.scale * .9);
-        if (!this.force_dice_material) this.force_dice_material = new THREE.MeshFaceMaterial(
+        this.force_dice_material = new THREE.MeshFaceMaterial(
             this.create_dice_materials(
                 this.force_dice_labels,
                 this.scale,
@@ -462,21 +459,21 @@
 
     this.create_d10 = function () {
         if (!this.d10_geometry) this.d10_geometry = this.create_d10_geometry(this.scale * 0.9);
-        if (!this.dice_material) this.dice_material = new THREE.MeshFaceMaterial(
+        this.dice_material = new THREE.MeshFaceMaterial(
             this.create_dice_materials(this.standart_d20_dice_face_labels, this.scale / 2, 1.0));
         return new THREE.Mesh(this.d10_geometry, this.dice_material);
     }
 
     this.create_d12 = function () {
         if (!this.d12_geometry) this.d12_geometry = this.create_d12_geometry(this.scale * 0.9);
-        if (!this.dice_material) this.dice_material = new THREE.MeshFaceMaterial(
+        this.dice_material = new THREE.MeshFaceMaterial(
             this.create_dice_materials(this.standart_d20_dice_face_labels, this.scale / 2, 1.0));
         return new THREE.Mesh(this.d12_geometry, this.dice_material);
     }
 
     this.create_d20 = function () {
         if (!this.d20_geometry) this.d20_geometry = this.create_d20_geometry(this.scale);
-        if (!this.dice_material) this.dice_material = new THREE.MeshFaceMaterial(
+        this.dice_material = new THREE.MeshFaceMaterial(
             this.create_dice_materials(this.standart_d20_dice_face_labels, this.scale / 2, 1.0));
         return new THREE.Mesh(this.d20_geometry, this.dice_material);
     }
@@ -720,7 +717,6 @@
     }
 
     function get_dice_value(dice) {
-        console.log(dice)
         var vector = new THREE.Vector3(0, 0, dice.dice_type == 'd4' ? -1 : 1);
         var closest_face, closest_angle = Math.PI * 2;
         for (var i = 0, l = dice.geometry.faces.length; i < l; ++i) {
@@ -755,7 +751,10 @@
         return get_dice_values(this.dices);
     }
 
+
+
     this.dice_box.prototype.__animate = function (threadid) {
+
         var time = (new Date()).getTime();
         var time_diff = (time - this.last_time) / 1000;
         if (time_diff > 3) time_diff = that.frame_rate;

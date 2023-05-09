@@ -13,10 +13,8 @@ const addLight = (succ, adv, tri, disp, dark, light) => [succ, adv, tri, disp, d
 
 
 const parseResult = (dict, index) => {
-    console.log('a', dict, index)
     dict = dict.filter(v => v !== '-')
     const entries = dict[index].trim().split('');
-    console.log(entries)
     return entries.map(charEntry => {
         switch (charEntry) {
             case 's': return addSuccess;
@@ -141,7 +139,7 @@ const useDice = () => {
             },
             (v, n, callback) => { /* before roll */
                 vectors = v;
-                notation = n
+                notation = n;
                 callback()
             },
             (notation, result) => { /* after roll */
@@ -172,7 +170,10 @@ const useDice = () => {
                 setSet([])
                 break;
             case 'roll':
+                window.__diceBox.set_dice(peerMessage.notation.set);
+                window.__diceBox.draw_selector();
                 setHasRolled(true);
+                console.log("MIRROR ROLL:", peerMessage.notation, peerMessage.result)
                 window.__diceBox.start_throw(
                     () => { /* notation getter */
                         return peerMessage.notation;
@@ -181,7 +182,7 @@ const useDice = () => {
                         callback(peerMessage.result)
                     },
                     (notation, result) => { /* after roll */
-                        console.log('RESULT:', notation, result)
+                        console.log('MIRROR RESULT:', notation, result)
                         const res = parseResults(notation.set, result)
                         setResults(r => [res, ...r])
                     },
