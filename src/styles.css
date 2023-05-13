@@ -97,3 +97,16 @@
   flex:1;
   color:'#363636';
 }
+.vid-rig {
+  position:fixed;
+  left:0;
+  top:0;
+  z-index:1;
+  display: none;
+}
+.vid-rig video {
+
+}
+.vid-rig-visible {
+  display: block;
+}

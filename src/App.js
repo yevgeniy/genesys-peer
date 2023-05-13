@@ -10,15 +10,18 @@ import RollResult from './RollResult';
 
 export default function App() {
 
-  const [, { isConnectedToHost, toHostConnectionUrl, hostPeerId, isError }] = useCommonHook(usePeer) || [, {}]
+  const [{ isHost, isConnectedToHost, toHostConnectionUrl, hostPeerId, isError }] = useCommonHook(usePeer) || [{}]
   const [results, { clearDice, roll, hasRolled }] = useCommonHook(useDice) || [[], {}]
 
   useEffect(() => {
+    if (!isHost)
+      return;
+    
     setTimeout(() => {
 
       dice_initialize(document.body)
     }, 1000)
-  }, [])
+  }, [isHost])
 
 
   const copyToClipBoard = (e) => {
@@ -29,6 +32,12 @@ export default function App() {
 
   return (
     <div className="App">
+
+      {
+        <div className={`vid-rig ${isConnectedToHost ? 'vid-rig-visible' : ''}`}>
+          <video autoPlay width={1200} height={600} muted/>
+        </div>
+      }
 
       <div className="connection-rig">
         {toHostConnectionUrl && <>
@@ -52,6 +61,9 @@ export default function App() {
           </h5>
         </>}
       </div>
+
+      
+      
 
       <div className={`dice-rig ${hasRolled ? 'has-rolled' : ''}`}>
         <div>
@@ -77,9 +89,7 @@ export default function App() {
         {results.slice(0, 30).map(result => <RollResult {...result} />)}
       </div>
 
-      <div style={{position:'fixed', right:0, bottom:0, zIndex:0}} >
-        <video width={400} height={400} autoPlay muted/>
-      </div>
+      
 
       <div className="BAGGAGE">
         <div id="info_div" style={{ display: 'none' }}>

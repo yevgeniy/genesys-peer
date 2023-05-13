@@ -16,7 +16,8 @@ const usePeer = () => {
     const toHostConnection = useRef();
     const [lastMessage, setLastMessage] = useState()
 
-    const [isConnectedToHost, setIsConnectedToHost] = useState();
+    const [isConnectedToHost, setIsConnectedToHost] = useState(null);
+    const [isHost, setIsHost]=useState(null)
     const [toHostConnectionUrl, setToHostConnectionUrl] = useState();
     const [hostPeerId, setHostPeerId] = useState();
     const [isError, setIsError] = useState();
@@ -32,8 +33,8 @@ const usePeer = () => {
 
     useEffect(() => {
         peer.current = new Peer();
-
         const hostPeerId = getClientPeerId()
+
         if (hostPeerId) { /* is slave */
             peer.current.on('open', function (id) {
                 toHostConnection.current = peer.current.connect(hostPeerId.trim());
@@ -43,9 +44,6 @@ const usePeer = () => {
                     toHostConnection.current.on('data', function (data) {
                         parseMessage(data)
                     });
-
-                    setIsConnectedToHost(true);
-                    setHostPeerId(hostPeerId);
                 });
         
             });
@@ -63,8 +61,12 @@ const usePeer = () => {
                     setTimeout(()=> {
                         console.log('PLAYING')
                         vid.play();
+
+                        setIsConnectedToHost(true);
+                        setHostPeerId(hostPeerId);
                     },2000)
                 })
+
             })
 
         } else { /* this is master */
@@ -82,21 +84,24 @@ const usePeer = () => {
                     parseMessage(data);
                 });
                 streamRef.current=streamRef.current || document.querySelector('canvas').captureStream(60);
+                const constraints = {
+                    width: { min: 600, ideal: 1920 },
+                    height: { min: 600, ideal: 1280 },
+                    advanced: [{ width: 1920, height: 1280 }, { aspectRatio: 1.333 }],
+                };
+                streamRef.current.getVideoTracks()[0].applyConstraints(constraints);
 
                 /* call the slave w/ canvas stream */
                 console.log("CALLING", slaveId)
                 const call= peer.current.call(slaveId, streamRef.current);
                 
-                const vid=document.querySelector('video')
-                vid.autoplay=true;
-                vid.srcObject=streamRef.current
             });
 
-
+            setIsHost(true);
         }
     }, [])
 
-    return [lastMessage, { isConnectedToHost, toHostConnectionUrl, hostPeerId, sendMessage }]
+    return [{isHost, lastMessage, isConnectedToHost, toHostConnectionUrl, hostPeerId}, {  sendMessage }]
 }
 
 export default usePeer;

@@ -85,7 +85,7 @@ const useDice = () => {
 
     const [set, setSet] = useState([])
     const [results, setResults] = useState([])
-    const [peerMessage, { sendMessage }] = useCommonHook(usePeer) || [, {}]
+    const [{peerMessage}, {sendMessage }] = useCommonHook(usePeer) || [{}, {}]
     const [hasRolled, setHasRolled] = useState(false)
 
 
