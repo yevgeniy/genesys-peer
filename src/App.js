@@ -21,7 +21,9 @@ export default function App() {
   }, [])
 
 
-  const copyToClipBoard = () => {
+  const copyToClipBoard = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
     navigator.clipboard.writeText(toHostConnectionUrl);
   }
 
@@ -75,7 +77,11 @@ export default function App() {
         {results.slice(0, 30).map(result => <RollResult {...result} />)}
       </div>
 
-      <div >
+      <div style={{position:'fixed', right:0, bottom:0, zIndex:0}} >
+        <video width={400} height={400} autoPlay muted/>
+      </div>
+
+      <div className="BAGGAGE">
         <div id="info_div" style={{ display: 'none' }}>
           <div className="center_field" >
             <span id="label"></span>
@@ -98,9 +104,6 @@ export default function App() {
 
         <div id="canvas" ></div>
 
-        <div style={{ position: 'fixed', right: 0, bottom: 0, zIndex: 2 }}>
-          <canvas id='out' width={200} height={200} />
-        </div>
 
       </div>
 

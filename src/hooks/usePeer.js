@@ -20,12 +20,12 @@ const usePeer = () => {
     const [toHostConnectionUrl, setToHostConnectionUrl] = useState();
     const [hostPeerId, setHostPeerId] = useState();
     const [isError, setIsError] = useState();
+    const streamRef=useRef();
 
     const parseMessage = (data) => {
         setLastMessage(JSON.parse(data))
     }
     const sendMessage = (data) => {
-
         toHostConnection.current && toHostConnection.current.send(JSON.stringify(data));
     }
 
@@ -34,7 +34,7 @@ const usePeer = () => {
         peer.current = new Peer();
 
         const hostPeerId = getClientPeerId()
-        if (hostPeerId) { /* is client, connect to host */
+        if (hostPeerId) { /* is slave */
             peer.current.on('open', function (id) {
                 toHostConnection.current = peer.current.connect(hostPeerId.trim());
 
@@ -44,15 +44,30 @@ const usePeer = () => {
                         parseMessage(data)
                     });
 
-                    // Send messages
-                    //toHostConnection.send('Hello!');
-
                     setIsConnectedToHost(true);
                     setHostPeerId(hostPeerId);
                 });
+        
             });
 
-        } else { /* this is host, generate connection string for other clients to connect to */
+            peer.current.on('call', (call)=> {
+
+                console.log('GOT CALL')
+                call.answer()
+
+                call.on('stream', (stream)=> {
+                    console.log("STREAMING", stream)
+                    const vid=document.querySelector('video')
+                    vid.srcObject=stream;
+
+                    setTimeout(()=> {
+                        console.log('PLAYING')
+                        vid.play();
+                    },2000)
+                })
+            })
+
+        } else { /* this is master */
             peer.current.on('open', function (id) {
                 const url = generateUrlToHost(id)
                 setToHostConnectionUrl(url);
@@ -62,11 +77,21 @@ const usePeer = () => {
                 setIsError(true)
             })
             peer.current.on('connection', function (fromClientConnection) {
+                const slaveId= fromClientConnection.peer;
                 fromClientConnection.on('data', (data) => {
                     parseMessage(data);
-                })
+                });
+                streamRef.current=streamRef.current || document.querySelector('canvas').captureStream(60);
 
+                /* call the slave w/ canvas stream */
+                console.log("CALLING", slaveId)
+                const call= peer.current.call(slaveId, streamRef.current);
+                
+                const vid=document.querySelector('video')
+                vid.autoplay=true;
+                vid.srcObject=streamRef.current
             });
+
 
         }
     }, [])
