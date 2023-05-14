@@ -11,7 +11,6 @@ const addDisp = (succ, adv, tri, disp, dark, light) => [succ, adv, tri, ++disp, 
 const addDark = (succ, adv, tri, disp, dark, light) => [succ, adv, tri, disp, ++dark, light]
 const addLight = (succ, adv, tri, disp, dark, light) => [succ, adv, tri, disp, dark, ++light]
 
-
 const parseResult = (dict, index) => {
     dict = dict.filter(v => v !== '-')
     const entries = dict[index].trim().split('');
@@ -81,6 +80,17 @@ const parseResults = (set, result) => {
 
 }
 
+const generateRandoms =(set) => {
+    return set.map(name=> {
+
+        const [startingNumber, lastNumber] = window.__dice_face_range[name];
+        const multiplyer=lastNumber+1-startingNumber /* look at __dice_face_range */
+        console.log(name, multiplyer);
+
+        return Math.min(Math.ceil( Math.random() * multiplyer ), multiplyer)
+    })
+}
+
 const useDice = () => {
 
     const [set, setSet] = useState([])
@@ -138,9 +148,10 @@ const useDice = () => {
             (v, n, callback) => { /* before roll */
                 vectors = v;
                 notation = n;
-                sendMessage({ type: 'roll', vectors, notation })
+                const results=generateRandoms(set);
+                sendMessage({ type: 'roll', vectors, notation, results })
 
-                callback([1,1,1,1,1,1,1,1])
+                callback(results)
             },
             (notation, result) => { /* after roll */
                 console.log('RESULT:', notation, result)
@@ -169,8 +180,6 @@ const useDice = () => {
                 setSet([])
                 break;
             case 'roll':
-                //window.__diceBox.set_dice(lastMessage.notation.set);
-                //window.__diceBox.draw_selector();
                 setHasRolled(true);
                 console.log("MIRROR ROLL:", lastMessage.notation)
                 window.__diceBox.start_throw(
@@ -178,8 +187,7 @@ const useDice = () => {
                         return lastMessage.notation;
                     },
                     (vectors, notation, callback) => { /* before roll */
-                        //callback(lastMessage.result)
-                        callback([1,1,1,1,1,1,1,1])
+                        callback(lastMessage.results)
                     },
                     (notation, result) => { /* after roll */
                         console.log('MIRROR RESULT:', notation, result)

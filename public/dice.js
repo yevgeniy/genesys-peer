@@ -305,9 +305,14 @@
 
 
     window.__known_types = this.known_types = [];
-    this.dice_face_range = {
-        'd4': [1, 4], 'd6': [1, 6], 'd8': [1, 8], 'd10': [0, 9],
-        'd12': [1, 12], 'd20': [1, 20], 'd100': [0, 9],
+    window.__dice_face_range = this.dice_face_range = {
+        'd4': [1, 4], 
+        'd6': [1, 6], 
+        'd8': [1, 8], 
+        'd10': [0, 9],
+        'd12': [1, 12], 
+        'd20': [1, 20], 
+        'd100': [0, 9],
         'boost': [1, 6],
         'setback': [1, 6],
         'ability': [1, 8],
@@ -771,7 +776,7 @@
         }
         for (var i in this.scene.children) {
             var interact = this.scene.children[i];
-            console.log('a',interact)
+            //console.log('a',interact)
             if (interact.body != undefined) {
                 /* GENE: controls position */
                 interact.position.copy(interact.body.position);
