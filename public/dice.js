@@ -771,8 +771,12 @@
         }
         for (var i in this.scene.children) {
             var interact = this.scene.children[i];
+            console.log('a',interact)
             if (interact.body != undefined) {
+                /* GENE: controls position */
                 interact.position.copy(interact.body.position);
+
+                /* GENE: controls rotation */
                 interact.quaternion.copy(interact.body.quaternion);
             }
         }

@@ -14,14 +14,11 @@ export default function App() {
   const [results, { clearDice, roll, hasRolled }] = useCommonHook(useDice) || [[], {}]
 
   useEffect(() => {
-    if (!isHost)
-      return;
-    
     setTimeout(() => {
 
       dice_initialize(document.body)
     }, 1000)
-  }, [isHost])
+  }, [])
 
 
   const copyToClipBoard = (e) => {
@@ -33,11 +30,11 @@ export default function App() {
   return (
     <div className="App">
 
-      {
+      {/* {
         <div className={`vid-rig ${isConnectedToHost ? 'vid-rig-visible' : ''}`}>
           <video autoPlay width={1200} height={600} muted/>
         </div>
-      }
+      } */}
 
       <div className="connection-rig">
         {toHostConnectionUrl && <>

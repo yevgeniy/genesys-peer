@@ -21,13 +21,25 @@ const usePeer = () => {
     const [toHostConnectionUrl, setToHostConnectionUrl] = useState();
     const [hostPeerId, setHostPeerId] = useState();
     const [isError, setIsError] = useState();
-    const streamRef=useRef();
+    const [slaveConnections, setSlaveConnections]=useState([])
 
-    const parseMessage = (data) => {
+
+    const parseMessage = (data, from) => {
         setLastMessage(JSON.parse(data))
+
+        if (isHost)
+            sendMessage(JSON.parse(data), from)
     }
-    const sendMessage = (data) => {
-        toHostConnection.current && toHostConnection.current.send(JSON.stringify(data));
+    const sendMessage = (data, from) => {
+        console.log("SENDING", data, from)
+        if (toHostConnection.current)
+            toHostConnection.current && toHostConnection.current.send(JSON.stringify(data));
+        else if (isHost) {
+            slaveConnections.forEach(conn=> {
+                if (conn!==from)
+                    conn.send(JSON.stringify(data));
+            })
+        }
     }
 
 
@@ -42,32 +54,38 @@ const usePeer = () => {
                 toHostConnection.current.on('open', function () {
 
                     toHostConnection.current.on('data', function (data) {
+                        console.log("GOT MESSAGE FROM MASTER", data)
                         parseMessage(data)
                     });
+
+                    setIsConnectedToHost(true);
+                    setHostPeerId(hostPeerId);
                 });
         
             });
 
-            peer.current.on('call', (call)=> {
+            setIsHost(false);
 
-                console.log('GOT CALL')
-                call.answer()
+            // peer.current.on('call', (call)=> {
 
-                call.on('stream', (stream)=> {
-                    console.log("STREAMING", stream)
-                    const vid=document.querySelector('video')
-                    vid.srcObject=stream;
+            //     console.log('GOT CALL')
+            //     call.answer()
 
-                    setTimeout(()=> {
-                        console.log('PLAYING')
-                        vid.play();
+            //     call.on('stream', (stream)=> {
+            //         console.log("STREAMING", stream)
+            //         const vid=document.querySelector('video')
+            //         vid.srcObject=stream;
 
-                        setIsConnectedToHost(true);
-                        setHostPeerId(hostPeerId);
-                    },2000)
-                })
+            //         setTimeout(()=> {
+            //             console.log('PLAYING')
+            //             vid.play();
 
-            })
+            //             setIsConnectedToHost(true);
+            //             setHostPeerId(hostPeerId);
+            //         },2000)
+            //     })
+
+            // })
 
         } else { /* this is master */
             peer.current.on('open', function (id) {
@@ -78,22 +96,28 @@ const usePeer = () => {
                 console.log(err)
                 setIsError(true)
             })
-            peer.current.on('connection', function (fromClientConnection) {
-                const slaveId= fromClientConnection.peer;
-                fromClientConnection.on('data', (data) => {
-                    parseMessage(data);
-                });
-                streamRef.current=streamRef.current || document.querySelector('canvas').captureStream(60);
-                const constraints = {
-                    width: { min: 600, ideal: 1920 },
-                    height: { min: 600, ideal: 1280 },
-                    advanced: [{ width: 1920, height: 1280 }, { aspectRatio: 1.333 }],
-                };
-                streamRef.current.getVideoTracks()[0].applyConstraints(constraints);
+            peer.current.on('connection', function (fromSlaveConnection) {
 
-                /* call the slave w/ canvas stream */
-                console.log("CALLING", slaveId)
-                const call= peer.current.call(slaveId, streamRef.current);
+                
+                fromSlaveConnection.on('data', (data) => {
+                    console.log("GOT MESSAGE FROM SLAVE", data)
+                    parseMessage(data, fromSlaveConnection);
+                });
+
+                setSlaveConnections(conns=>[...conns, fromSlaveConnection])
+
+                // const slaveId= fromClientConnection.peer;
+                // streamRef.current=streamRef.current || document.querySelector('canvas').captureStream(60);
+                // const constraints = {
+                //     width: { min: 600, ideal: 1920 },
+                //     height: { min: 600, ideal: 1280 },
+                //     advanced: [{ width: 1920, height: 1280 }, { aspectRatio: 1.333 }],
+                // };
+                // streamRef.current.getVideoTracks()[0].applyConstraints(constraints);
+
+                // /* call the slave w/ canvas stream */
+                // console.log("CALLING", slaveId)
+                // const call= peer.current.call(slaveId, streamRef.current);
                 
             });
 

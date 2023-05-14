@@ -85,7 +85,7 @@ const useDice = () => {
 
     const [set, setSet] = useState([])
     const [results, setResults] = useState([])
-    const [{peerMessage}, {sendMessage }] = useCommonHook(usePeer) || [{}, {}]
+    const [{lastMessage}, {sendMessage }] = useCommonHook(usePeer) || [{}, {}]
     const [hasRolled, setHasRolled] = useState(false)
 
 
@@ -130,8 +130,6 @@ const useDice = () => {
         let notation;
         setHasRolled(true);
 
-        console.log('ROLL')
-
         window.__diceBox.start_throw(
             () => { /* notation getter */
                 var ret = { set, constant: 0, result: [], error: false }
@@ -140,11 +138,12 @@ const useDice = () => {
             (v, n, callback) => { /* before roll */
                 vectors = v;
                 notation = n;
-                callback()
+                sendMessage({ type: 'roll', vectors, notation })
+
+                callback([1,1,1,1,1,1,1,1])
             },
             (notation, result) => { /* after roll */
                 console.log('RESULT:', notation, result)
-                sendMessage({ type: 'roll', vectors, notation, result })
                 const res = parseResults(notation.set, result)
                 setResults(r => [res, ...r])
             }
@@ -153,15 +152,15 @@ const useDice = () => {
     }
 
     useEffect(() => {
-        if (!peerMessage)
+        if (!lastMessage)
             return;
 
-        switch (peerMessage.type) {
+        switch (lastMessage.type) {
             case 'set-dice':
                 setHasRolled(false);
-                window.__diceBox.set_dice(peerMessage.newset);
+                window.__diceBox.set_dice(lastMessage.newset);
                 window.__diceBox.draw_selector();
-                setSet(peerMessage.newset)
+                setSet(lastMessage.newset)
                 break;
             case 'clear-dice':
                 setHasRolled(false);
@@ -170,29 +169,30 @@ const useDice = () => {
                 setSet([])
                 break;
             case 'roll':
-                window.__diceBox.set_dice(peerMessage.notation.set);
-                window.__diceBox.draw_selector();
+                //window.__diceBox.set_dice(lastMessage.notation.set);
+                //window.__diceBox.draw_selector();
                 setHasRolled(true);
-                console.log("MIRROR ROLL:", peerMessage.notation, peerMessage.result)
+                console.log("MIRROR ROLL:", lastMessage.notation)
                 window.__diceBox.start_throw(
                     () => { /* notation getter */
-                        return peerMessage.notation;
+                        return lastMessage.notation;
                     },
                     (vectors, notation, callback) => { /* before roll */
-                        callback(peerMessage.result)
+                        //callback(lastMessage.result)
+                        callback([1,1,1,1,1,1,1,1])
                     },
                     (notation, result) => { /* after roll */
                         console.log('MIRROR RESULT:', notation, result)
                         const res = parseResults(notation.set, result)
                         setResults(r => [res, ...r])
                     },
-                    peerMessage.vectors
+                    lastMessage.vectors
                 )
                 break;
         }
 
 
-    }, [peerMessage])
+    }, [lastMessage])
 
     return [results, { clearDice, addDie, roll, hasRolled }]
 }
