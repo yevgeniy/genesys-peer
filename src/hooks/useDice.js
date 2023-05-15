@@ -100,11 +100,14 @@ const useDice = () => {
 
 
 
-    window.__diceIndexClicked = (dieIndex) => {
+    window.__dieIdClicked = (dieId) => {
         setSet(v => {
+            const dieIndex=window.__dieIds.findIndex(v=>v===dieId);
 
             v.splice(dieIndex, 1);
             const newset = [...v];
+            window.__dieIds.splice(dieIndex, 1);
+
             window.__diceBox.set_dice(newset);
             window.__diceBox.draw_selector();
 
@@ -117,8 +120,11 @@ const useDice = () => {
     const clearDice = () => {
         setHasRolled(false);
         console.log('clear')
+        window.__dieIds=[];
+
         window.__diceBox.set_dice([]);
         window.__diceBox.clear();
+        
         setSet([])
         sendMessage({ type: 'clear-dice' })
 
@@ -127,7 +133,11 @@ const useDice = () => {
         setHasRolled(false);
 
         setSet(v => {
+            const dieId=+new Date();
             const newset = [...v, name];
+            window.__dieIds=window.__dieIds || [];
+            window.__dieIds = [...window.__dieIds, dieId];
+
             window.__diceBox.set_dice(newset);
             window.__diceBox.draw_selector();
             sendMessage({ type: 'set-dice', newset })

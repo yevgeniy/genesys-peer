@@ -97,13 +97,14 @@ function dice_initialize(container) {
     $t.bind(container, ['mouseup', 'touchend'], function (ev) {
         ev.stopPropagation();
 
-        var name = box.search_dice_by_mouse(ev);
-        const dieIndex = box.search_index_by_mouse(ev);
+//        var name = box.search_dice_by_mouse(ev);
+//        const dieIndex = box.search_index_by_mouse(ev);
+        const dieId = box.search_dieId_by_mouse(ev);
 
         /* GENE: clicked on a die and got it's name */
-        console.log("CLICKED", name, dieIndex)
-        if (dieIndex > -1)
-            window.__diceIndexClicked(dieIndex);
+
+        if (dieId > -1)
+            window.__dieIdClicked(dieId);
 
 
         // if (name != undefined) {

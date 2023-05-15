@@ -908,6 +908,17 @@
             return -1;
         return this.dices.findIndex(v => v === intersects[0].object)
     }
+    this.dice_box.prototype.search_dieId_by_mouse=function(ev) {
+        var m = $t.get_mouse_coords(ev);
+        var intersects = (new THREE.Raycaster(this.camera.position,
+            (new THREE.Vector3((m.x - this.cw) / this.aspect,
+                1 - (m.y - this.ch) / this.aspect, this.w / 9))
+                .sub(this.camera.position).normalize())).intersectObjects(this.dices);
+
+        if (intersects.length) {
+            return intersects[0].object.die_id;
+        } 
+    }
 
     this.dice_box.prototype.draw_pane = function () {
         this.clear();
@@ -937,6 +948,7 @@
 
         for (var i = 0, pos = -startingPos; i < that.known_types.length; ++i, ++pos) {
             var dice = $t.dice['create_' + that.known_types[i]]();
+            dice.die_id = window.__dieIds[i];
             dice.position.set(pos * step, 0, step * 0.5);
             dice.castShadow = true;
             dice.userData = that.known_types[i];
