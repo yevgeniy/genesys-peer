@@ -8,6 +8,7 @@ import DiceButton from './DiceButton';
 import useCommonHook from 'nimm-commonhook';
 import RollResult from './RollResult';
 import Master from './Master'
+import Slave from './Slave'
 
 const getClientPeerId = () => {
   const m = location.href.match(/hostid=(.+?)$/)
@@ -26,7 +27,7 @@ export default function App() {
     }, 1000)
   }, [])
 
-  const copyToClipBoard = (e) => {
+  const copyToClipBoard = (e, toHostConnectionUrl) => {
     e.stopPropagation();
     e.preventDefault();
     navigator.clipboard.writeText(toHostConnectionUrl);
@@ -34,13 +35,13 @@ export default function App() {
 
   return <div className="App">
     {
-      React.cloneElement(<Master />, {}, 
-        ({toHostConnectionUrl, isHost, isError, hasRolled, results, isConnectedToHost, hostPeerId, roll, clearDice})=> <>
+      React.cloneElement(hostPeerId ? <Slave hostPeerId={hostPeerId} /> : <Master />, {}, 
+        ({toHostConnectionUrl, isError, hasRolled, results, isConnectedToHost, roll, clearDice})=> <>
         
         <div className="connection-rig">
           {toHostConnectionUrl && <>
             <h5>Connection url:</h5>
-            <div>{toHostConnectionUrl} <BiCopyAlt className="copy-button" title="copy" onClick={copyToClipBoard} /></div>
+            <div>{toHostConnectionUrl} <BiCopyAlt className="copy-button" title="copy" onClick={e=>copyToClipBoard(e,toHostConnectionUrl)} /></div>
             <sub>Using this url other players can connect to your host.</sub>
           </>}
 
