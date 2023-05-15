@@ -1,197 +1,70 @@
 import useCommonHook from "nimm-commonhook";
-import { useEffect, useState } from "react";
-import usePeer from "./usePeer";
-
-const addSuccess = (succ, adv, tri, disp, dark, light) => [++succ, adv, tri, disp, dark, light]
-const addAdv = (succ, adv, tri, disp, dark, light) => [succ, ++adv, tri, disp, dark, light]
-const removeSuccess = (succ, adv, tri, disp, dark, light) => [--succ, adv, tri, disp, dark, light]
-const removeAdv = (succ, adv, tri, disp, dark, light) => [succ, --adv, tri, disp, dark, light]
-const addTri = (succ, adv, tri, disp, dark, light) => [succ, adv, ++tri, disp, dark, light]
-const addDisp = (succ, adv, tri, disp, dark, light) => [succ, adv, tri, ++disp, dark, light]
-const addDark = (succ, adv, tri, disp, dark, light) => [succ, adv, tri, disp, ++dark, light]
-const addLight = (succ, adv, tri, disp, dark, light) => [succ, adv, tri, disp, dark, ++light]
-
-const parseResult = (dict, index) => {
-    dict = dict.filter(v => v !== '-')
-    const entries = dict[index].trim().split('');
-    return entries.map(charEntry => {
-        switch (charEntry) {
-            case 's': return addSuccess;
-            case 'a': return addAdv;
-            case 'f': return removeSuccess;
-            case 'h': return removeAdv;
-            case 't': return addTri;
-            case 'd': return addDisp;
-            case '●': return addDark;
-            case '○': return addLight;
-        }
-    })
-}
-
-const parseResults = (set, result) => {
-    let succ = 0;
-    let adv = 0;
-    let disp = 0;
-    let tri = 0;
-    let dark = 0;
-    let light = 0;
-
-    const accumulators = []
-
-    set.forEach((name, i) => {
-        switch (name) {
-            case 'boost':
-                accumulators.push(...parseResult(window.boost_dice_labels, (+result[i]) - 1))
-                break;
-            case 'setback':
-                accumulators.push(...parseResult(window.setback_dice_labels, (+result[i]) - 1))
-                break;
-            case 'ability':
-                accumulators.push(...parseResult(window.ability_dice_labels, (+result[i]) - 1))
-                break;
-            case 'difficulty':
-                accumulators.push(...parseResult(window.difficulty_dice_labels, (+result[i]) - 1))
-                break;
-            case 'proficiency':
-                accumulators.push(...parseResult(window.proficiency_dice_labels, (+result[i]) - 1))
-                break;
-            case 'challenge':
-                accumulators.push(...parseResult(window.challenge_dice_labels, (+result[i]) - 1))
-                break;
-            case 'force':
-                accumulators.push(...parseResult(window.force_dice_labels, (+result[i]) - 1))
-                break;
-        }
-    })
-
-    accumulators.forEach(fn => {
-        [succ, adv, tri, disp, dark, light] = fn(succ, adv, tri, disp, dark, light)
-    })
+import { useEffect, useRef, useState } from "react";
+import useServerBus from "./useServerBus";
+import {dieUtilsGenerateRandoms, dieUtilsParseResults } from '../utils'
 
 
-    return {
-        succ,
-        adv,
-        tri,
-        disp,
-        dark,
-        light
-    }
-
-}
-
-const generateRandoms =(set) => {
-    return set.map(name=> {
-
-        const [startingNumber, lastNumber] = window.__dice_face_range[name];
-        const multiplyer=lastNumber+1-startingNumber /* look at __dice_face_range */
-        console.log(name, multiplyer);
-
-        return Math.min(Math.ceil( Math.random() * multiplyer ), multiplyer)
-    })
-}
-
-const useDice = () => {
-
-    const [set, setSet] = useState([])
-    const [results, setResults] = useState([])
-    const [{lastMessage}, {sendMessage }] = useCommonHook(usePeer) || [{}, {}]
+const useParseMessage=(lastMessage,addMessage)=> {
     const [hasRolled, setHasRolled] = useState(false)
+    const [results, setResults] = useState([])
+    const set=useRef([])
+    const [,rerun]=useState()
 
-
-
-    window.__dieIdClicked = (dieId) => {
-        setSet(v => {
-            const dieIndex=window.__dieIds.findIndex(v=>v===dieId);
-
-            v.splice(dieIndex, 1);
-            const newset = [...v];
-            window.__dieIds.splice(dieIndex, 1);
-
-            window.__diceBox.set_dice(newset);
-            window.__diceBox.draw_selector();
-
-            sendMessage({ type: 'set-dice', newset })
-
-            return newset;
-        })
-    }
-
-    const clearDice = () => {
-        setHasRolled(false);
-        console.log('clear')
-        window.__dieIds=[];
-
-        window.__diceBox.set_dice([]);
-        window.__diceBox.clear();
-        
-        setSet([])
-        sendMessage({ type: 'clear-dice' })
-
-    }
-    const addDie = name => {
-        setHasRolled(false);
-
-        setSet(v => {
-            const dieId=+new Date();
-            const newset = [...v, name];
-            window.__dieIds=window.__dieIds || [];
-            window.__dieIds = [...window.__dieIds, dieId];
-
-            window.__diceBox.set_dice(newset);
-            window.__diceBox.draw_selector();
-            sendMessage({ type: 'set-dice', newset })
-
-            return newset;
-        })
-    }
-    const roll = () => {
-        let vectors;
-        let notation;
-        setHasRolled(true);
-
-        window.__diceBox.start_throw(
-            () => { /* notation getter */
-                var ret = { set, constant: 0, result: [], error: false }
-                return ret
-            },
-            (v, n, callback) => { /* before roll */
-                vectors = v;
-                notation = n;
-                const results=generateRandoms(set);
-                sendMessage({ type: 'roll', vectors, notation, results })
-
-                callback(results)
-            },
-            (notation, result) => { /* after roll */
-                console.log('RESULT:', notation, result)
-                const res = parseResults(notation.set, result)
-                setResults(r => [res, ...r])
-            }
-
-        )
-    }
-
-    useEffect(() => {
+    useEffect(()=> {
         if (!lastMessage)
             return;
 
         switch (lastMessage.type) {
-            case 'set-dice':
+            case 'add-die':
                 setHasRolled(false);
-                window.__diceBox.set_dice(lastMessage.newset);
+                window.__dieIds = window.__dieIds || []
+                window.__dieIds.push(lastMessage.dieId)
+                set.current.push(lastMessage.name);
+                window.__diceBox.set_dice(set.current);
                 window.__diceBox.draw_selector();
-                setSet(lastMessage.newset)
+                break;
+            case 'remove-die':
+                setHasRolled(false);
+                const i = window.__dieIds.findIndex(v=>v===lastMessage.dieId)
+                window.__dieIds.splice(i,1);
+                set.current.splice(i,1);
+                window.__diceBox.set_dice(set.current);
+                window.__diceBox.draw_selector();
                 break;
             case 'clear-dice':
                 setHasRolled(false);
+                window.__dieIds = [];
                 window.__diceBox.set_dice([]);
                 window.__diceBox.clear();
-                setSet([])
+                set.current=[];
                 break;
-            case 'roll':
+            case 'master-roll':
+                let vectors;
+                let notation;
                 setHasRolled(true);
-                console.log("MIRROR ROLL:", lastMessage.notation)
+
+                window.__diceBox.start_throw(
+                    () => { /* notation getter */
+                        var ret = { set:set.current, constant: 0, result: [], error: false }
+                        return ret
+                    },
+                    (v, n, callback) => { /* before roll */
+                        vectors = v;
+                        notation = n;
+                        const results=dieUtilsGenerateRandoms(set.current);
+                        addMessage({ type: 'slave-roll', vectors, notation, results })
+
+                        callback(results)
+                    },
+                    (notation, result) => { /* after roll */
+                        console.log('RESULT:', notation, result)
+                        const res = dieUtilsParseResults(notation.set, result)
+                        setResults(r => [res, ...r])
+                    }
+                )
+                break;
+            case 'slave-roll':
+                setHasRolled(true);
                 window.__diceBox.start_throw(
                     () => { /* notation getter */
                         return lastMessage.notation;
@@ -200,8 +73,7 @@ const useDice = () => {
                         callback(lastMessage.results)
                     },
                     (notation, result) => { /* after roll */
-                        console.log('MIRROR RESULT:', notation, result)
-                        const res = parseResults(notation.set, result)
+                        const res = dieUtilsParseResults(notation.set, result)
                         setResults(r => [res, ...r])
                     },
                     lastMessage.vectors
@@ -209,8 +81,34 @@ const useDice = () => {
                 break;
         }
 
+        rerun(+new Date())
+    
+    },[lastMessage])
 
-    }, [lastMessage])
+    return {hasRolled, results}
+}
+
+
+const useDice = () => {
+
+    const [lastMessage, {addMessage}] = useCommonHook(useServerBus) || [, {}]
+
+    const {hasRolled, results} = useParseMessage(lastMessage, addMessage)
+
+    window.__dieIdClicked = (dieId) => {
+        addMessage({type:'remove-die', dieId})
+    }
+
+    const addDie = name => {
+        addMessage({type:'add-die', name, dieId:+new Date()})
+    }
+    
+    const roll=()=> {
+        addMessage({type:'master-roll'})
+    }
+    const clearDice=()=> {
+        addMessage({type:'clear-dice'})
+    }
 
     return [results, { clearDice, addDie, roll, hasRolled }]
 }
