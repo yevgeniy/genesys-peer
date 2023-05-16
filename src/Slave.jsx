@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import Peer from 'peerjs';
 import useCommonHook from "nimm-commonhook";
-import { useDice, useServerBus } from "./hooks";
+import { useDice, useMessage } from "./hooks";
 
 
 const Slave=({children, hostPeerId})=> {
     const peer=useRef()
     const [, rerun]=useState();
     const [isConnectedToHost, setIsConnectedToHost] = useState(null);
-    const [, {executeMessage, initSlave}] = useCommonHook(useServerBus) || [, {}]
+    const [, {executeMessage, initSlave}] = useCommonHook(useMessage) || [, {}]
 
     const [results, {roll, clearDice, hasRolled}]=useCommonHook(useDice) || [,{}]
 

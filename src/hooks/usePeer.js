@@ -1,52 +1,52 @@
-import React, { useRef, useState, useEffect, useMemo } from 'react'
+import React, { useRef, useState, useEffect, useMemo, useCallback } from 'react'
 import Peer from 'peerjs';
 
+const generateUrlToHost = id => {
+    return `${location.href}?hostid=${id}`
+}
 
-const usePeer = (type /*master | slave */) => {
-    const peer=useRef()
+const usePeer = () => {
+    const peer=useRef(new Peer())
 
-    useMemo(()=> {
-        if (type==='master') {
-            peer.current = new Peer();
-            peer.current.on('open', function (id) {
-                const url = generateUrlToHost(id)
-                setToHostConnectionUrl(url);
+    const [toHostConnectionUrl, setToHostConnectionUrl] = useState();
+    const [isError, setIsError] = useState();
+    const [lastMessage, setLastMessage]=useState(null);
+    const peerConnections=useRef([])
+
+    useEffect(()=> {
+        peer.current.on('open', function (id) {
+            const url = generateUrlToHost(id)
+            setToHostConnectionUrl(url);
+        });
+        peer.current.on('error', (err) => {
+            console.log(err)
+            setIsError(true)
+        })
+
+        peer.current.on('connection', function (otherPeer) {
+
+            otherPeer.on('data', (data) => {
+                console.log("GOT MESSAGE FROM SLAVE", data)
+                setLastMessage(JSON.parse(data))
             });
-            peer.current.on('error', (err) => {
-                console.log(err)
-                setIsError(true)
-            })
-            peer.current.on('connection', function (fromSlaveConnection) {
-    
-                fromSlaveConnection.on('data', (data) => {
-                    console.log("GOT MESSAGE FROM SLAVE", data)
-                    addMessage(data)
-                });
-    
-                slaveConnections.current.push(fromSlaveConnection);
-            });
-        } else if (type==='slave') {
-            peer.current.on('open', function (id) {
-                const toMasterConnection = peer.current.connect(hostPeerId.trim());
-    
-                toMasterConnection.on('open', function () {
-    
-                    toMasterConnection.on('data', function (data) {
-                        console.log("GOT MESSAGE FROM MASTER", data)
-                        executeMessage(data)
-                    });
-    
-                    setIsConnectedToHost(true);
-                });
+
+            peerConnections.current.push(otherPeer);
+        })
         
-            });
-        }
-        
+    })
 
-        rerun(+new Date());
+    const broadcast = useCallback(()=> {
+        peerConnections.current.forEach(con=> {
+            con.send(JSON.stringify( {type:'system-connections', connections: peerConnections.current.map(v=>v.peerId)}))
+        })
+    },[]);
+    const sendMessage = useCallback( (message)=> {
+        peerConnections.current.forEach(con=> {
+            con.send(JSON.stringify( message))
+        })
     },[])
     
-    return [{type}]
+    return [{peer: peer.current, toHostConnectionUrl, isError, lastMessage}, {broadcast, sendMessage}]
 }
 
 export default usePeer;

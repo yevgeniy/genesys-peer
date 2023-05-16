@@ -1,50 +1,29 @@
 import React, { useEffect, useRef, useState } from "react";
 import Peer from 'peerjs';
 import useCommonHook from "nimm-commonhook";
-import { useDice, useServerBus } from "./hooks";
+import { useDice, useMessage, usePeer } from "./hooks";
 
 
-const generateUrlToHost = id => {
-    return `${location.href}?hostid=${id}`
-}
+
 
 const Master=({children})=> {
-    const peer=useRef()
+    const [{peer, toHostConnectionUrl, isError}, {broadcast}]=useCommonHook(usePeer) || [{},{}]
     const [, rerun]=useState();
-    
-    const [toHostConnectionUrl, setToHostConnectionUrl] = useState();
-    const slaveConnections=useRef([])
-    const [, {addMessage, initMaster}] = useCommonHook(useServerBus) || [, {}]
-    const [isError, setIsError] = useState();
 
-    const [results, {roll,clearDice, hasRolled}]=useCommonHook(useDice) || [,{}]
+    const [results, {roll, clearDice, hasRolled}]=useCommonHook(useDice) || [,{}]
 
-    useEffect(()=> {
-        if (!initMaster)
+    useEffect(()=> {        
+        if (!peer) 
             return;
-        peer.current = new Peer();
+        if (!broadcast)
+            return;
         
-        peer.current.on('open', function (id) {
-            const url = generateUrlToHost(id)
-            setToHostConnectionUrl(url);
-            initMaster(slaveConnections.current);
-        });
-        peer.current.on('error', (err) => {
-            console.log(err)
-            setIsError(true)
-        })
-        peer.current.on('connection', function (fromSlaveConnection) {
-
-            fromSlaveConnection.on('data', (data) => {
-                console.log("GOT MESSAGE FROM SLAVE", data)
-                addMessage(JSON.parse(data))
-            });
-            
-            slaveConnections.current.push(fromSlaveConnection);
+        peer.on('connection', function (otherPeer) {
+            broadcast();
         });
 
         rerun(+new Date());
-    },[initMaster])
+    },[peer,broadcast])
 
     return children && children({toHostConnectionUrl, isError, hasRolled, results, roll, clearDice});
 }

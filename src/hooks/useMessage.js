@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-const useServerBus=()=> {
+const useMessage=()=> {
 
     const [,rerun]=useState();
     const messages=useRef([])
@@ -65,4 +65,4 @@ const useServerBus=()=> {
     return [lastMessage, {addMessage, executeMessage, initMaster, initSlave}];
 }
 
-export default useServerBus;
+export default useMessage;
