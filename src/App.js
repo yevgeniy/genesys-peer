@@ -1,11 +1,9 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { BiCopyAlt, BiPlug, BiCommentError } from 'react-icons/bi'
 
 import "./styles.css";
 import "./genesys.css";
-import { useDice, usePeer } from './hooks';
 import DiceButton from './DiceButton';
-import useCommonHook from 'nimm-commonhook';
 import RollResult from './RollResult';
 import Master from './Master'
 import Slave from './Slave'
@@ -14,6 +12,12 @@ const getClientPeerId = () => {
   const m = location.href.match(/hostid=(.+?)$/)
 
   return m && m[1]
+}
+
+const copyToClipBoard = (e, toHostConnectionUrl) => {
+  e.stopPropagation();
+  e.preventDefault();
+  navigator.clipboard.writeText(toHostConnectionUrl);
 }
 
 export default function App() {
@@ -26,12 +30,6 @@ export default function App() {
       dice_initialize(document.body)
     }, 1000)
   }, [])
-
-  const copyToClipBoard = (e, toHostConnectionUrl) => {
-    e.stopPropagation();
-    e.preventDefault();
-    navigator.clipboard.writeText(toHostConnectionUrl);
-  }
 
   return <div className="App">
     {
@@ -46,7 +44,6 @@ export default function App() {
           </>}
 
           {isConnectedToHost && <>
-
             <h5>
               <BiPlug title={`connected`} size={30} color="#416649" />
               <i>{hostPeerId}</i>

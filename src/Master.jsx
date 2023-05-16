@@ -11,7 +11,6 @@ const generateUrlToHost = id => {
 const Master=({children})=> {
     const peer=useRef()
     const [, rerun]=useState();
-
     
     const [toHostConnectionUrl, setToHostConnectionUrl] = useState();
     const slaveConnections=useRef([])
@@ -40,7 +39,7 @@ const Master=({children})=> {
                 console.log("GOT MESSAGE FROM SLAVE", data)
                 addMessage(JSON.parse(data))
             });
-
+            
             slaveConnections.current.push(fromSlaveConnection);
         });
 
