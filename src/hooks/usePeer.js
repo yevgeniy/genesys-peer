@@ -65,8 +65,6 @@ const usePeer = () => {
                 return;
             
             wireConnection(otherPeer, peerConnections, setLastMessage, rerun);
-            
-            
         })
         
     })
