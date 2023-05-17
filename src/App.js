@@ -34,7 +34,7 @@ export default function App() {
   return <div className="App">
     {
       React.cloneElement(hostPeerId ? <Slave hostPeerId={hostPeerId} /> : <Master />, {}, 
-        ({toHostConnectionUrl, isError, hasRolled, results, isConnectedToHost, roll, clearDice})=> <>
+        ({toHostConnectionUrl, isError, hasRolled, results, roll, clearDice, peerIds})=> <>
         
         <div className="connection-rig">
           {toHostConnectionUrl && <>
@@ -43,12 +43,15 @@ export default function App() {
             <sub>Using this url other players can connect to your host.</sub>
           </>}
 
-          {isConnectedToHost && <>
-            <h5>
-              <BiPlug title={`connected`} size={30} color="#416649" />
-              <i>{hostPeerId}</i>
-            </h5>
-          </>}
+          {peerIds && peerIds.map(v=> {
+            return <>
+            
+              <h5>
+                <BiPlug title={`connected`} size={30} color="#416649" />
+                <i>{v}</i>
+              </h5>
+            </>
+          })}
 
           {isError && <>
             <h5>

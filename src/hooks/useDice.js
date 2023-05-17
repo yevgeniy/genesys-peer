@@ -27,7 +27,7 @@ const doClear=({setHasRolled, set})=> {
     set.current=[];
 }
 
-const useParseMessage=({lastMessage, setHasRolled, setResults, set})=> {
+const useParseMessage=({lastMessage, setHasRolled, setResults, set, rerun})=> {
 
     useEffect(()=> {
         if (!lastMessage)
@@ -75,7 +75,7 @@ const useDice = () => {
     const [,rerun]=useState()
 
     const [{lastMessage}, {sendMessage}]=useCommonHook(usePeer) || [{},{}]
-    useParseMessage({lastMessage, setHasRolled, setResults, set})
+    useParseMessage({lastMessage, setHasRolled, setResults, set, rerun})
 
     window.__dieIdClicked = (dieId) => {
         doRemoveDie({dieId, set, setHasRolled})

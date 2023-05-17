@@ -1,41 +1,36 @@
-import React, { useEffect, useRef, useState } from "react";
-import Peer from 'peerjs';
+import { useEffect, useRef, useState } from "react";
 import useCommonHook from "nimm-commonhook";
-import { useDice, useMessage } from "./hooks";
-
+import { useDice, usePeer } from "./hooks";
 
 const Slave=({children, hostPeerId})=> {
-    const peer=useRef()
     const [, rerun]=useState();
-    const [isConnectedToHost, setIsConnectedToHost] = useState(null);
-    const [, {executeMessage, initSlave}] = useCommonHook(useMessage) || [, {}]
+    const [{peer, peerIds}, {connectToPeer, spreadConnections}]=useCommonHook(usePeer) || [{},{}]
 
     const [results, {roll, clearDice, hasRolled}]=useCommonHook(useDice) || [,{}]
 
     useEffect(()=> {
-        if (!initSlave)
+        if (!peer)
             return;
-        peer.current = new Peer();
-        peer.current.on('open', function (id) {
-            const toMasterConnection = peer.current.connect(hostPeerId.trim());
+        if (!connectToPeer)
+            return;
+        if (!spreadConnections)
+            return;
+        peer.on('open', function (id) {
+            const otherPeer = connectToPeer(hostPeerId.trim())
 
-            toMasterConnection.on('open', function () {
-                initSlave(toMasterConnection)
+            otherPeer.on('data', data=> {
+                const message=JSON.parse(data);
 
-                toMasterConnection.on('data', function (data) {
-                    console.log("GOT MESSAGE FROM MASTER", data)
-                    executeMessage(data)
-                });
-
-                setIsConnectedToHost(true);
-            });
-    
+                if (message.type==='system-connections') {
+                    spreadConnections(message.peers);
+                }
+            })
         });
 
         rerun(+new Date());
-    },[initSlave])
+    },[peer,connectToPeer, spreadConnections])
 
-    return children && children({isConnectedToHost, hasRolled, results, roll, clearDice});
+    return children && children({ hasRolled, results, roll, clearDice, peerIds});
 }
 
 export default Slave;

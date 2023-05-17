@@ -81,7 +81,6 @@ export const dieUtilsGenerateRandoms =(set) => {
 
         const [startingNumber, lastNumber] = window.__dice_face_range[name];
         const multiplyer=lastNumber+1-startingNumber /* look at __dice_face_range */
-        console.log(name, multiplyer);
 
         return Math.min(Math.ceil( Math.random() * multiplyer ), multiplyer)
     })

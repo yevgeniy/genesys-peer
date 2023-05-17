@@ -776,7 +776,6 @@
         }
         for (var i in this.scene.children) {
             var interact = this.scene.children[i];
-            //console.log('a',interact)
             if (interact.body != undefined) {
                 /* GENE: controls position */
                 interact.position.copy(interact.body.position);
@@ -977,9 +976,7 @@
         /* GENE: get selected dice */
         var notation = notation_getter.call(box);
         if (notation.set.length == 0) return;
-
-        //notation.set = ['boost', 'boost', 'boost']
-        console.log(notation)
+        
         /* GENE: generate vector array for a list of die names notation={set:['d12', 'd12']} */
         vectors = vectors || box.generate_vectors(notation, vector, boost);
 
