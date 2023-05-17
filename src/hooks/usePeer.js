@@ -1,9 +1,5 @@
-import React, { useRef, useState, useEffect, useMemo, useCallback } from 'react'
+import React, { useRef, useState, useEffect, useCallback } from 'react'
 import Peer from 'peerjs';
-
-const generateUrlToHost = id => {
-    return `${location.href}?hostid=${id}`
-}
 
 const wireConnection=(otherPeer, peerConnections, setLastMessage, rerun)=> {
     peerConnections.current.push(otherPeer);
@@ -45,16 +41,12 @@ const usePeer = () => {
     const [,rerun]=useState();
     const peer=useRef(new Peer())
 
-    const [toHostConnectionUrl, setToHostConnectionUrl] = useState();
     const [isError, setIsError] = useState();
     const [lastMessage, setLastMessage]=useState(null);
     const peerConnections=useRef([])
 
     useEffect(()=> {
-        peer.current.on('open', function (id) {
-            const url = generateUrlToHost(id)
-            setToHostConnectionUrl(url);
-        });
+        
         peer.current.on('error', (err) => {
             console.log(err)
             setIsError(true)
@@ -102,7 +94,6 @@ const usePeer = () => {
     
     return [{
             peer: peer.current, 
-            toHostConnectionUrl, 
             isError, 
             lastMessage, 
             peerIds: peerConnections.current.map(v=>v.peer)

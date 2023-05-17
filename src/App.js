@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { BiCopyAlt, BiPlug, BiCommentError } from 'react-icons/bi'
+import clsx from 'classnames'
 
 import "./styles.css";
 import "./genesys.css";
@@ -36,22 +37,26 @@ export default function App() {
       React.cloneElement(hostPeerId ? <Slave hostPeerId={hostPeerId} /> : <Master />, {}, 
         ({toHostConnectionUrl, isError, hasRolled, results, roll, clearDice, peerIds})=> <>
         
-        <div className="connection-rig">
+        <div className={clsx('connection-rig', {
+          'has-rolled': hasRolled
+        })}>
           {toHostConnectionUrl && <>
             <h5>Connection url:</h5>
             <div>{toHostConnectionUrl} <BiCopyAlt className="copy-button" title="copy" onClick={e=>copyToClipBoard(e,toHostConnectionUrl)} /></div>
             <sub>Using this url other players can connect to your host.</sub>
           </>}
 
-          {peerIds && peerIds.map(v=> {
-            return <>
-            
-              <h5>
-                <BiPlug title={`connected`} size={30} color="#416649" />
-                <i>{v}</i>
-              </h5>
-            </>
-          })}
+            <div className="connections">
+              {peerIds && peerIds.map(v=> {
+                return <div>
+                  <h5>
+                    <BiPlug title={`connected`} size={18} color="#416649" />
+                    <i>{v}</i>
+                  </h5>
+                </div>
+              })}
+            </div>
+          
 
           {isError && <>
             <h5>
@@ -61,7 +66,9 @@ export default function App() {
           </>}
         </div>
 
-        <div className={`dice-rig ${hasRolled ? 'has-rolled' : ''}`}>
+        <div className={clsx('dice-rig', {
+          'has-rolled': hasRolled
+        })}>
           <div>
             <div className="dice-buttons">
               <DiceButton name='ability' />
@@ -81,7 +88,9 @@ export default function App() {
           </div>
         </div>
 
-        <div className='results-rig'>
+        <div className={clsx('results-rig', {
+          'has-rolled': hasRolled
+        })}>
           {(results||[]).slice(0, 30).map(result => <RollResult {...result} />)}
         </div>
 
