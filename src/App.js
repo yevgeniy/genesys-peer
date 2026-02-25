@@ -91,7 +91,7 @@ export default function App() {
         <div className={clsx('results-rig', {
           'has-rolled': hasRolled
         })}>
-          {(results||[]).slice(0, 30).map(result => <RollResult {...result} />)}
+          {(results||[]).slice(0, 1).map(result => <RollResult {...result} />)}
         </div>
 
         <div className="BAGGAGE">

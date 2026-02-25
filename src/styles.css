@@ -50,6 +50,7 @@
 }
 .dice-buttons {
   display: flex;
+  flex-wrap: wrap;
   gap:20px;
 }
 .dice-button {
@@ -90,10 +91,12 @@
 
 
 .results-rig {
+  background:white;
   position: fixed;
   z-index: 1;
   right:0;
   top:0;
+  max-width: 100%;
   width:350px;
   font-size: 12px;
 }
@@ -101,6 +104,9 @@
   display: flex;
   padding:3px;
   border-bottom: dotted 1px #686868;
+}
+.results-rig .result-entry b{
+  font-family: Genesys;
 }
 .results-rig .result-entry:last-child {
   border-bottom:none;
